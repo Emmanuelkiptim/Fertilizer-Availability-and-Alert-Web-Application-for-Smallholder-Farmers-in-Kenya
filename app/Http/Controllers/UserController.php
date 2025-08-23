@@ -10,13 +10,13 @@ class UserController extends Controller
     //
     public function Dashboard(){
         if(Auth::check() && Auth::user()->role=='farmer'){
-           return view ('farmer.farmer-dashboard'); 
+           return view ('farmer.farmerDetails'); 
         }
         else if(Auth::check() && Auth::user()->role=='admin'){
            return view ('admin.admin-dashboard'); 
         }
         else if(Auth::check() && Auth::user()->role=='agrovet'){
-           return view ('agrovet.agrovet-dashboard'); 
+           return view ('agrovet.agrovetDetails'); 
         }
         else{
             return redirect('/');
