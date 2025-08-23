@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('farmers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
-                  ->constrained('systemusers')
+                  ->constrained('users')
                   ->onDelete('cascade');
             $table->string('farm_name')->nullable();
             $table->string('location(Latitiude)');

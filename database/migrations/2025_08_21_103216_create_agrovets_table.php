@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('agrovets', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
-                  ->constrained('systemusers')
+                  ->constrained('users')
                   ->onDelete('cascade');
             $table->string('shop_name');
             $table->string('location(Latitiude)');
