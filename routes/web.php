@@ -16,8 +16,8 @@ Route::get('/atest', function () {
 
 
 Route::middleware(['auth','farmer'])->group(function () {
-    Route::get('/Register/EditFarmer', [FarmerController::class, 'registerFarmer'])->name('farmer.Register/EditFarmer');
-    
+    Route::get('/register-as-a-farmer', [FarmerController::class, 'create'])->name('farmer.create');
+    Route::post('/register-as-a-farmer', [FarmerController::class, 'store'])->name('farmer.store');
 });
 
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');

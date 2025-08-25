@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('alert', function (Blueprint $table) {
                 $table->id();
-                $table->unsignedBigInteger('farmer_id'); // FK to farmers
+               // $table->unsignedBigInteger('farmer_id'); // FK to farmers
                 $table->string('message');
                 $table->timestamp('created_at')->useCurrent();
 
-                $table->foreign('farmer_id')->references('id')->on('farmers')->onDelete('cascade');
+               // $table->foreign('farmer_id')->references('id')->on('farmers')->onDelete('cascade');
 
         });
     }
