@@ -3,13 +3,11 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FarmerController;
 
 Route::get('/', function () {
     return view('auth.register');
 });
-Route::get('/ftest', function () {
-    return view('farmer.testfile');
-})->middleware(['auth','verified','farmer']);
 
 
 Route::get('/atest', function () {
@@ -17,7 +15,10 @@ Route::get('/atest', function () {
 })->middleware(['auth','verified','agrovet']);
 
 
-
+Route::middleware(['auth','farmer'])->group(function () {
+    Route::get('/Register/EditFarmer', [FarmerController::class, 'registerFarmer'])->name('farmer.Register/EditFarmer');
+    
+});
 
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 

@@ -10,7 +10,7 @@ class UserController extends Controller
     //
     public function Dashboard(){
         if(Auth::check() && Auth::user()->role=='farmer'){
-           return view ('farmer.farmerDetails'); 
+           return view ('farmer.farmer-dashboard'); 
         }
         else if(Auth::check() && Auth::user()->role=='admin'){
            return view ('admin.admin-dashboard'); 
