@@ -32,4 +32,5 @@ class FarmerController extends Controller
         ]);
         return redirect()->route('dashboard')->with('Success', 'Farmer profile created successfully');
     }
+
 }
