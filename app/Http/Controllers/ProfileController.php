@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+
 class ProfileController extends Controller
 {
     /**
@@ -16,9 +17,23 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        // return view('profile.edit', [
+        //     'user' => $request->user(),
+        // ]);
+        if(Auth::check() && Auth::user()->role=='farmer'){
+           return view ('farmer.profile.edit',[
             'user' => $request->user(),
-        ]);
+           ]); 
+        }
+        else if(Auth::check() && Auth::user()->role=='agrovet'){
+           return view ('agrovet.profile.edit',[
+            'user' => $request->user(),
+           ]); 
+        }
+        else{
+            return redirect('/dashboard');
+        }
+        
     }
 
     /**
@@ -57,4 +72,6 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    
 }

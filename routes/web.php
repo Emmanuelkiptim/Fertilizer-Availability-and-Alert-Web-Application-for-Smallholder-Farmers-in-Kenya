@@ -9,11 +9,7 @@ Route::get('/', function () {
     return view('auth.register');
 });
 
-
-Route::get('/atest', function () {
-    return view('agrovet.testfile');
-})->middleware(['auth','verified','agrovet']);
-
+Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth','farmer'])->group(function () {
     Route::get('/register-as-a-farmer', [FarmerController::class, 'create'])->name('farmer.create');
