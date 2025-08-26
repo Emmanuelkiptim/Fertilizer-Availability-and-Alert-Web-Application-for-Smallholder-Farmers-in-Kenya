@@ -16,7 +16,7 @@ class UserController extends Controller
            return view ('admin.admin-dashboard'); 
         }
         else if(Auth::check() && Auth::user()->role=='agrovet'){
-           return view ('agrovet.agrovetDetails'); 
+           return view ('agrovet.agrovet-dashboard'); 
         }
         else{
             return redirect('/');

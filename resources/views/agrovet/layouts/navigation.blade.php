@@ -16,7 +16,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('farmer.create')" :active="request()->routeIs('farmer.create')">
-                        {{ __('Complete Farmer Profile') }}
+                        {{ __('Complete Agrovet Profile') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -74,6 +74,7 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
+        
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

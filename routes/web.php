@@ -16,6 +16,7 @@ Route::middleware(['auth','farmer'])->group(function () {
     Route::post('/register-as-a-farmer', [FarmerController::class, 'store'])->name('farmer.store');
 });
 
+
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
