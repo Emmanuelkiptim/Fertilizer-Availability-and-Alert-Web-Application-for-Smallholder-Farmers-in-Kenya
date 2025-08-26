@@ -49,4 +49,8 @@ class User extends Authenticatable
     public function farmer(){
         return $this->hasOne(Farmer::class);
     }
+    public function agrovet()
+    {
+        return $this->hasOne(Agrovet::class);
+    }
 }
