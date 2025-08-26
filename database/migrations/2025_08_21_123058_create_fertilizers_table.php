@@ -20,10 +20,10 @@ return new class extends Migration
             $table->decimal('price', 8, 2); // Price
             $table->boolean('availability')->default(1); // Availability flag
             $table->timestamps();
-            $table->foreign('agrovet_id')
-                  ->references('id')  // matches agrovets.id
-                  ->on('agrovets')
-                  ->onDelete('cascade');
+           // $table->foreign('agrovet_id')
+                 // ->references('id')  // matches agrovets.id
+                 // ->on('agrovets')
+                  //->onDelete('cascade');
         });
     }
 

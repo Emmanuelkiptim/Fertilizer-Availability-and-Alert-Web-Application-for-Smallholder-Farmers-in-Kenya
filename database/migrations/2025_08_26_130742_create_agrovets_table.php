@@ -16,9 +16,10 @@ return new class extends Migration
             $table->foreignId('user_id')
                   ->constrained('users')
                   ->onDelete('cascade');
-            $table->string('shop_name');
-            $table->string('location(Latitiude)');
-            $table->string('location(Longitude)');
+            $table->string('shopname');
+            $table->string('agrovet_phonenumber');
+            $table->decimal('location_latitude', 10, 7)->nullable();
+            $table->decimal('location_longitude', 10, 7)->nullable();
             $table->timestamps();
         });
     }

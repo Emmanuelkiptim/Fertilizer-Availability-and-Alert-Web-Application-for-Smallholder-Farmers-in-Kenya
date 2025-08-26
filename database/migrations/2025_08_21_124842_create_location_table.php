@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('longitude', 10, 7);
             $table->timestamps();
 
-            $table->foreign('agrovet_id')->references('id')->on('agrovets')->onDelete('cascade');
+           // $table->foreign('agrovet_id')->references('id')->on('agrovets')->onDelete('cascade');
 
         });
     }

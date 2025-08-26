@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('report', function (Blueprint $table) {
             $table->id('report_id');
-            $table->foreignId('agrovet_id')
-                  ->constrained('agrovets')
-                  ->onDelete('cascade');
+            //$table->foreignId('agrovet_id')
+                 // ->constrained('agrovets')
+                  //->onDelete('cascade');
             $table->text('report_type');
             $table->text('report_data');
             $table->timestamps();

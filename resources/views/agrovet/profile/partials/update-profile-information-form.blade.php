@@ -60,6 +60,26 @@
                 >{{ __('Saved.') }}</p>
             @endif
         </div>
+        <div>
+            <x-input-label for="shopname" :value="__('Agrovet Shop Name (Cannot be changed)')" />
+            <x-text-input id="shopname" name="shopname" type="text" class="mt-1 block w-full" :value="old('shopname', $user->agrovet->shopname ?? '')" required autofocus autocomplete="shopname" />
+            <x-input-error class="mt-2" :messages="$errors->get('shopname')" />
+        </div>
+        <div>
+            <x-input-label for="agrovet_phonenumber" :value="__('Agrovet Phone Number(Cannot be changed)')" />
+            <x-text-input id="agrovet_phonenumber" name="agrovet_phonenumber" type="text" class="mt-1 block w-full" :value="old('agrovet_phonenumber', $user->agrovet->agrovet_phonenumber ?? '')" required autofocus autocomplete="agrovet_phonenumber" />
+            <x-input-error class="mt-2" :messages="$errors->get('agrovet_phonenumber')" />
+        </div>
+        <div>
+            <x-input-label for="location_latitude" :value="__('Location Latitude (Cannot be changed)')" />
+            <x-text-input id="location_latitude" name="location_latitude" type="text" class="mt-1 block w-full" :value="old('location_latitude', $user->agrovet->location_latitude ?? '')" required autofocus autocomplete="location_latitude" />
+            <x-input-error class="mt-2" :messages="$errors->get('location_latitude')" />
+        </div>
+        <div>
+            <x-input-label for="location_longitude" :value="__('Location Longitude (Cannot be changed)')" />
+            <x-text-input id="location_longitude" name="location_longitude" type="text" class="mt-1 block w-full" :value="old('location_longitude', $user->agrovet->location_longitude ?? '')" required autofocus autocomplete="location_longitude" />
+            <x-input-error class="mt-2" :messages="$errors->get('location_longitude')" />
+        </div>
 
         
 

@@ -4,18 +4,23 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FarmerController;
+use App\Http\Controllers\AgrovetController;
 
 Route::get('/', function () {
     return view('auth.register');
 });
 
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
-
+//farmer registration
 Route::middleware(['auth','farmer'])->group(function () {
     Route::get('/register-as-a-farmer', [FarmerController::class, 'create'])->name('farmer.create');
     Route::post('/register-as-a-farmer', [FarmerController::class, 'store'])->name('farmer.store');
 });
-
+//agrovet registration
+Route::middleware(['auth','agrovet'])->group(function () {
+    Route::get('/register-as-an-agrovet', [AgrovetController::class, 'create'])->name('agrovet.create');
+    Route::post('/register-as-an-agrovet', [AgrovetController::class, 'store'])->name('agrovet.store');
+});
 
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
