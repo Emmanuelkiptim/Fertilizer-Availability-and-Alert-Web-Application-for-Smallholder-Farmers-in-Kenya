@@ -33,4 +33,25 @@ class FarmerController extends Controller
         return redirect()->route('dashboard')->with('Success', 'Farmer profile created successfully');
     }
 
+    public function update(Request $request)
+    {
+        $request->validate([
+            'farmer_phonenumber' => 'required|string',
+        ]);
+
+        $user = Auth::user();
+
+        if (!$user->farmer) {
+            return redirect()->route('dashboard')->with('error', 'You are not registered as a farmer');
+        }
+
+        $user->farmer->update([
+            'farmer_phonenumber' => $request->farmer_phonenumber,
+            'location_latitude' => $request->location_latitude,
+            'location_longitude' => $request->location_longitude,
+        ]);
+
+        return redirect()->route('dashboard')->with('success', 'Farmer information updated successfully');
+    }
+
 }

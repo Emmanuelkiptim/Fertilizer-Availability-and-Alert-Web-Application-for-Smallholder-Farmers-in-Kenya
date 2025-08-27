@@ -23,6 +23,7 @@ Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth'
 Route::middleware(['auth','farmer'])->group(function () {
     Route::get('/register-as-a-farmer', [FarmerController::class, 'create'])->name('farmer.create');
     Route::post('/register-as-a-farmer', [FarmerController::class, 'store'])->name('farmer.store');
+    Route::post('/profile/update-phone', [FarmerController::class, 'update'])->name('farmer.update');
 });
 //agrovet registration
 Route::middleware(['auth','agrovet'])->group(function () {

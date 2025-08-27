@@ -60,23 +60,92 @@
                 >{{ __('Saved.') }}</p>
             @endif
         </div>
+    @if(!$user->farmer)
+        </form>
+    <!-- First-time form: phone + location -->
+        <form id="farmerRegisterForm" action="{{ route('farmer.store') }}" method="POST">
+            @csrf
 
-        <div>
-            <x-input-label for="farmer_phonenumber" :value="__('Farmer Phone Number(Cannot be changed)')" />
-            <x-text-input id="farmer_phonenumber" name="farmer_phonenumber" type="text" class="mt-1 block w-full" :value="old('farmer_phonenumber', $user->farmer->farmer_phonenumber ?? '')" required autofocus autocomplete="farmer_phonenumber" />
-            <x-input-error class="mt-2" :messages="$errors->get('farmer_phonenumber')" />
-        </div>
-        <div>
-            <x-input-label for="location_latitude" :value="__('Location Latitude (Cannot be changed)')" />
-            <x-text-input id="location_latitude" name="location_latitude" type="text" class="mt-1 block w-full" :value="old('location_latitude', $user->farmer->location_latitude ?? '')" required autofocus autocomplete="location_latitude" />
-            <x-input-error class="mt-2" :messages="$errors->get('location_latitude')" />
-        </div>
-        <div>
-            <x-input-label for="location_longitude" :value="__('Location Longitude (Cannot be changed)')" />
-            <x-text-input id="location_longitude" name="location_longitude" type="text" class="mt-1 block w-full" :value="old('location_longitude', $user->farmer->location_longitude ?? '')" required autofocus autocomplete="location_longitude" />
-            <x-input-error class="mt-2" :messages="$errors->get('location_longitude')" />
-        </div>
+            <!-- farmer_phonenumber -->
+            <div class="mb-3">
+                <label for="farmer_phonenumber" class="form-label">FarmerPhone Number</label>
+                <input type="text" name="farmer_phonenumber" id="farmer_phonenumber" class="form-control" required>
+            </div>
 
-        
-    </form>
+            <!-- Hidden location fields -->
+            <input type="hidden" name="location_latitude" id="location_latitude">
+            <input type="hidden" name="location_longitude" id="location_longitude">
+
+            <!-- Button to capture location -->
+            <x-primary-button type="button" id="getLocationBtn" class='btn btn-secondary'>{{ __('Capture Location') }}</x-primary-button>
+
+            <!-- Save -->
+            <x-primary-button type="submit" class='btn btn-primary mt-3'>{{ __('Save Profile') }}</x-primary-button>
+        </form>
+        <!-- js for obtaining location-->
+        <script>
+            document.getElementById('getLocationBtn').addEventListener('click', function() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        document.getElementById('location_latitude').value = position.coords.latitude;
+                        document.getElementById('location_longitude').value = position.coords.longitude;
+                        locationCaptured = true;
+                        alert("✅ Location captured!");
+                        console.log("Latitude: " + position.coords.latitude);
+                        console.log("Longitude: " + position.coords.longitude);
+                    }, function(error) {
+                        alert("❌ Unable to retrieve your location.");
+                    });
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            });
+            // Ensure location is captured before form submission
+            document.getElementById('farmerRegisterForm').addEventListener('submit', function(event) {
+                if (!locationCaptured) {
+                    event.preventDefault();
+                    alert("❌ Please capture your location before submitting the form.");
+                }
+            });
+        </script>
+
+        <!-- edit farmer information-->
+    @else
+        <form id="farmerUpdateForm" method="POST" action="{{ route('farmer.update') }}" class="mt-6 space-y-6">
+            @csrf
+
+            <div>
+                <x-input-label for="farmer_phonenumber" :value="__('Edit Farmer Phone Number')" />
+                <x-text-input id="farmer_phonenumber" name="farmer_phonenumber" type="text" class="mt-1 block w-full" :value="old('farmer_phonenumber', $user->farmer->farmer_phonenumber ?? 'N/A')" required autofocus autocomplete="farmer_phonenumber" />
+                <x-input-error class="mt-2" :messages="$errors->get('farmer_phonenumber')" />
+            </div>
+            <x-primary-button>{{ __('Save') }}</x-primary-button>
+
+            <div>
+                <x-input-label for="location_latitude" :value="__('View Location Latitude')" />
+                <x-text-input id="location_latitude" name="location_latitude" type="text" class="mt-1 block w-full" :value="old('location_latitude', $user->farmer->location_latitude ?? 'N/A')" readonly/>
+                <x-input-error class="mt-2" :messages="$errors->get('location_latitude')" />
+            </div>
+
+            <div>
+                <x-input-label for="location_longitude" :value="__('View Location Longitude')" />
+                <x-text-input id="location_longitude" name="location_longitude" type="text" class="mt-1 block w-full" :value="old('location_longitude', $user->farmer->location_longitude ?? 'N/A')" readonly/>
+                <x-input-error class="mt-2" :messages="$errors->get('location_longitude')" />
+            </div>
+
+            <div class="flex items-center gap-4">
+                
+
+                @if (session('status') === 'profile-updated')
+                    <p
+                        x-data="{ show: true }"
+                        x-show="show"
+                        x-transition
+                        x-init="setTimeout(() => show = false, 2000)"
+                        class="text-sm text-gray-600 dark:text-gray-400"
+                    >{{ __('Saved.') }}</p>
+                @endif
+            </div>
+        </form>
+    @endif
 </section>

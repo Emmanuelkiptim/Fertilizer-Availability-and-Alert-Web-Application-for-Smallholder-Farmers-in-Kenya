@@ -18,8 +18,8 @@ return new class extends Migration
                   ->onDelete('cascade');
             $table->string('shopname');
             $table->string('agrovet_phonenumber');
-            $table->decimal('location_latitude', 10, 7)->nullable();
-            $table->decimal('location_longitude', 10, 7)->nullable();
+            $table->decimal('location_latitude', 11, 8)->nullable();
+            $table->decimal('location_longitude', 11, 8)->nullable();
             $table->timestamps();
         });
     }
