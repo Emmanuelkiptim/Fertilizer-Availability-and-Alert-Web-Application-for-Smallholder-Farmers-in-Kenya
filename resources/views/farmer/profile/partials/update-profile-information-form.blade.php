@@ -60,39 +60,41 @@
                 >{{ __('Saved.') }}</p>
             @endif
         </div>
+    </form>
     @if(!$user->farmer)
-        </form>
-    <!-- First-time form: phone + location -->
-        <form id="farmerRegisterForm" action="{{ route('farmer.store') }}" method="POST">
+        <!-- Registration form for new farmers -->
+        <h3 class="text-lg font-bold mb-4">Register as a Farmer</h3>
+        <form id="farmerRegisterForm" action="{{ route('farmer.store') }}" method="POST" class="space-y-4">
             @csrf
-
-            <!-- farmer_phonenumber -->
-            <div class="mb-3">
-                <label for="farmer_phonenumber" class="form-label">FarmerPhone Number</label>
-                <input type="text" name="farmer_phonenumber" id="farmer_phonenumber" class="form-control" required>
+            <div>
+                <label for="farmer_phonenumber" class="block mb-1">Phone Number</label>
+                <input type="text" name="farmer_phonenumber" id="farmer_phonenumber" class="w-full p-2 border rounded" required>
             </div>
-
-            <!-- Hidden location fields -->
-            <input type="hidden" name="location_latitude" id="location_latitude">
-            <input type="hidden" name="location_longitude" id="location_longitude">
-
-            <!-- Button to capture location -->
-            <x-primary-button type="button" id="getLocationBtn" class='btn btn-secondary'>{{ __('Capture Location') }}</x-primary-button>
-
-            <!-- Save -->
-            <x-primary-button type="submit" class='btn btn-primary mt-3'>{{ __('Save Profile') }}</x-primary-button>
+            <div>
+                <label class="block mb-1">Location Latitude</label>
+                <input type="hidden" name="location_latitude" id="location_latitude" required>
+                <input type="text" id="location_latitude_display" class="w-full p-2 border rounded bg-gray-100" readonly>
+            </div>
+            <div>
+                <label class="block mb-1">Location Longitude</label>
+                <input type="hidden" name="location_longitude" id="location_longitude" required>
+                <input type="text" id="location_longitude_display" class="w-full p-2 border rounded bg-gray-100" readonly>
+            </div>
+            <x-primary-button type="button" id="getLocationBtn" class="bg-green-600 text-white px-4 py-2 rounded">{{ __('Detect Location') }}</x-primary-button>
+            <x-primary-button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">{{ __('Register') }}</x-primary-button>
         </form>
-        <!-- js for obtaining location-->
         <script>
+            // JS for obtaining farmer location
+            let locationCaptured = false;
             document.getElementById('getLocationBtn').addEventListener('click', function() {
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(function(position) {
                         document.getElementById('location_latitude').value = position.coords.latitude;
                         document.getElementById('location_longitude').value = position.coords.longitude;
+                        document.getElementById('location_latitude_display').value = position.coords.latitude;
+                        document.getElementById('location_longitude_display').value = position.coords.longitude;
                         locationCaptured = true;
-                        alert("✅ Location captured!");
-                        console.log("Latitude: " + position.coords.latitude);
-                        console.log("Longitude: " + position.coords.longitude);
+                        alert("✅ Location detected!");
                     }, function(error) {
                         alert("❌ Unable to retrieve your location.");
                     });
@@ -100,52 +102,34 @@
                     alert("Geolocation is not supported by this browser.");
                 }
             });
-            // Ensure location is captured before form submission
             document.getElementById('farmerRegisterForm').addEventListener('submit', function(event) {
                 if (!locationCaptured) {
                     event.preventDefault();
-                    alert("❌ Please capture your location before submitting the form.");
+                    alert("❌ Please detect your location before submitting the form.");
                 }
             });
         </script>
-
-        <!-- edit farmer information-->
-    @else
-        <form id="farmerUpdateForm" method="POST" action="{{ route('farmer.update') }}" class="mt-6 space-y-6">
+        @else
+        <!-- Display farmer details and allow updating phone number only -->
+        <h3 class="text-lg font-bold mb-4">Your Farmer Profile</h3>
+        <div class="mb-4">
+            <strong>Phone Number:</strong> {{ $user->farmer->farmer_phonenumber }}
+        </div>
+        <div class="mb-4">
+            <strong>Location Latitude:</strong> {{ $user->farmer->location_latitude }}
+        </div>
+        <div class="mb-4">
+            <strong>Location Longitude:</strong> {{ $user->farmer->location_longitude }}
+        </div>
+        <h4 class="font-semibold mt-6 mb-2">Update Phone Number</h4>
+        <form method="POST" action="{{ route('farmer.update') }}" class="space-y-4">
             @csrf
-
             <div>
-                <x-input-label for="farmer_phonenumber" :value="__('Edit Farmer Phone Number')" />
-                <x-text-input id="farmer_phonenumber" name="farmer_phonenumber" type="text" class="mt-1 block w-full" :value="old('farmer_phonenumber', $user->farmer->farmer_phonenumber ?? 'N/A')" required autofocus autocomplete="farmer_phonenumber" />
-                <x-input-error class="mt-2" :messages="$errors->get('farmer_phonenumber')" />
+                <label for="farmer_phonenumber" class="block mb-1">Phone Number</label>
+                <input type="text" name="farmer_phonenumber" id="farmer_phonenumber" class="w-full p-2 border rounded" value="{{ old('farmer_phonenumber', $user->farmer->farmer_phonenumber) }}" required>
             </div>
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
-
-            <div>
-                <x-input-label for="location_latitude" :value="__('View Location Latitude')" />
-                <x-text-input id="location_latitude" name="location_latitude" type="text" class="mt-1 block w-full" :value="old('location_latitude', $user->farmer->location_latitude ?? 'N/A')" readonly/>
-                <x-input-error class="mt-2" :messages="$errors->get('location_latitude')" />
-            </div>
-
-            <div>
-                <x-input-label for="location_longitude" :value="__('View Location Longitude')" />
-                <x-text-input id="location_longitude" name="location_longitude" type="text" class="mt-1 block w-full" :value="old('location_longitude', $user->farmer->location_longitude ?? 'N/A')" readonly/>
-                <x-input-error class="mt-2" :messages="$errors->get('location_longitude')" />
-            </div>
-
-            <div class="flex items-center gap-4">
-                
-
-                @if (session('status') === 'profile-updated')
-                    <p
-                        x-data="{ show: true }"
-                        x-show="show"
-                        x-transition
-                        x-init="setTimeout(() => show = false, 2000)"
-                        class="text-sm text-gray-600 dark:text-gray-400"
-                    >{{ __('Saved.') }}</p>
-                @endif
-            </div>
+            <x-primary-button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">{{ __('Update') }}</x-primary-button>
         </form>
-    @endif
+        @endif
+
 </section>

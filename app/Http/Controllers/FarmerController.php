@@ -47,8 +47,7 @@ class FarmerController extends Controller
 
         $user->farmer->update([
             'farmer_phonenumber' => $request->farmer_phonenumber,
-            'location_latitude' => $request->location_latitude,
-            'location_longitude' => $request->location_longitude,
+            
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Farmer information updated successfully');

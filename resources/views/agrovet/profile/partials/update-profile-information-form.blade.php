@@ -59,37 +59,86 @@
                     class="text-sm text-gray-600 dark:text-gray-400"
                 >{{ __('Saved.') }}</p>
             @endif
-        </div>
-        <div>
-            <x-input-label for="shopname" :value="__('Agrovet Shop Name (Cannot be changed)')" />
-            <x-text-input id="shopname" name="shopname" type="text" class="mt-1 block w-full" :value="old('shopname', $user->agrovet->shopname ?? 'N/A')" required autofocus autocomplete="shopname" />
-            <x-input-error class="mt-2" :messages="$errors->get('shopname')" />
-        </div>
-        <div>
-            <x-input-label for="agrovet_phonenumber" :value="__('Agrovet Phone Number(Cannot be changed)')" />
-            <x-text-input id="agrovet_phonenumber" name="agrovet_phonenumber" type="text" class="mt-1 block w-full" :value="old('agrovet_phonenumber', $user->agrovet->agrovet_phonenumber ?? 'N/A')" required autofocus autocomplete="agrovet_phonenumber" />
-            <x-input-error class="mt-2" :messages="$errors->get('agrovet_phonenumber')" />
-        </div>
-        <div>
-            <x-input-label for="location_latitude" :value="__('Location Latitude (Cannot be changed)')" />
-            <x-text-input id="location_latitude" name="location_latitude" type="text" class="mt-1 block w-full" :value="old('location_latitude', $user->agrovet->location_latitude ?? 'N/A')" required autofocus autocomplete="location_latitude" />
-            <x-input-error class="mt-2" :messages="$errors->get('location_latitude')" />
-        </div>
-        <div>
-            <x-input-label for="location_longitude" :value="__('Location Longitude (Cannot be changed)')" />
-            <x-text-input id="location_longitude" name="location_longitude" type="text" class="mt-1 block w-full" :value="old('location_longitude', $user->agrovet->location_longitude ?? 'N/A')" required autofocus autocomplete="location_longitude" />
-            <x-input-error class="mt-2" :messages="$errors->get('location_longitude')" />
-        </div> 
-        
-<!-- Display Agrovet Details for Logged-in User -->
-<div class="max-w-md mx-auto mt-8 bg-white dark:bg-gray-800 p-6 rounded shadow">
-    <h2 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">Your Agrovet Details</h2>
-    <p><strong>Shop Name:</strong> {{ $user->agrovet->shopname ?? 'N/A' }}</p>
-    <p><strong>Phone Number:</strong> {{ $user->agrovet->agrovet_phonenumber ?? 'N/A' }}</p>
-    <p><strong>Location Latitude:</strong> {{ $user->agrovet->location_latitude ?? 'N/A' }}</p>
-    <p><strong>Location Longitude:</strong> {{ $user->agrovet->location_longitude ?? 'N/A' }}</p>
-</div>
-
-        
+        </div>     
     </form>
+    @if(!$user->agrovet)
+    <h3 class="text-lg font-bold mb-4">Register as an Agrovet</h3>
+        <form id="agrovetRegisterForm" action="{{ route('agrovet.store') }}" method="POST" class="space-y-4">
+            @csrf
+            <div>
+                <label for="shopname" class="block mb-1">Shop Name</label>
+                <input type="text" name="shopname" id="shopname" class="w-full p-2 border rounded" required>
+            </div>
+            <div>
+                <label for="agrovet_phonenumber" class="block mb-1">Phone Number</label>
+                <input type="text" name="agrovet_phonenumber" id="agrovet_phonenumber" class="w-full p-2 border rounded" required>
+            </div>
+            <div>
+                <label class="block mb-1">Location Latitude</label>
+                <input type="hidden" name="location_latitude" id="location_latitude" required>
+                <input type="text" id="location_latitude_display" class="w-full p-2 border rounded bg-gray-100" readonly>
+            </div>
+            <div>
+                <label class="block mb-1">Location Longitude</label>
+                <input type="hidden" name="location_longitude" id="location_longitude" required>
+                <input type="text" id="location_longitude_display" class="w-full p-2 border rounded bg-gray-100" readonly>
+            </div>
+            <x-primary-button type="button" id="getLocationBtn" class="bg-green-600 text-white px-4 py-2 rounded">{{ __('Detect Location') }}</x-primary-button>
+            <x-primary-button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">{{ __('Register') }}</x-primary-button>
+        </form>
+        <script>
+            let locationCaptured = false;
+            document.getElementById('getLocationBtn').addEventListener('click', function() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        document.getElementById('location_latitude').value = position.coords.latitude;
+                        document.getElementById('location_longitude').value = position.coords.longitude;
+                        document.getElementById('location_latitude_display').value = position.coords.latitude;
+                        document.getElementById('location_longitude_display').value = position.coords.longitude;
+                        locationCaptured = true;
+                        alert("✅ Location detected!");
+                    }, function(error) {
+                        alert("❌ Unable to retrieve your location.");
+                    });
+                } else {
+                    alert("Geolocation is not supported by this browser.");
+                }
+            });
+            document.getElementById('agrovetRegisterForm').addEventListener('submit', function(event) {
+                if (!locationCaptured) {
+                    event.preventDefault();
+                    alert("❌ Please detect your location before submitting the form.");
+                }
+            });
+        </script>
+        @else
+        <h3 class="text-lg font-bold mb-4">Your Agrovet Profile</h3>
+        <div class="mb-4">
+            <strong>Shop Name:</strong> {{ $user->agrovet->shopname }}
+        </div>
+        <div class="mb-4">
+            <strong>Phone Number:</strong> {{ $user->agrovet->agrovet_phonenumber }}
+        </div>
+        <div class="mb-4">
+            <strong>Location Latitude:</strong> {{ $user->agrovet->location_latitude }}
+        </div>
+        <div class="mb-4">
+            <strong>Location Longitude:</strong> {{ $user->agrovet->location_longitude }}
+        </div>
+        <h4 class="font-semibold mt-6 mb-2">Update Details</h4>
+        <form method="POST" action="{{ route('agrovet.update') }}" class="space-y-4">
+            @csrf
+            <div>
+                <label for="shopname" class="block mb-1">Shop Name</label>
+                <input type="text" name="shopname" id="shopname" class="w-full p-2 border rounded" value="{{ old('shopname', $user->agrovet->shopname) }}" required>
+            </div>
+            <div>
+                <label for="agrovet_phonenumber" class="block mb-1">Phone Number</label>
+                <input type="text" name="agrovet_phonenumber" id="agrovet_phonenumber" class="w-full p-2 border rounded" value="{{ old('agrovet_phonenumber', $user->agrovet->agrovet_phonenumber) }}" required>
+            </div>
+            
+            <x-primary-button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">{{ __('Update') }}</x-primary-button>
+        </form>
+        @endif
+
 </section>

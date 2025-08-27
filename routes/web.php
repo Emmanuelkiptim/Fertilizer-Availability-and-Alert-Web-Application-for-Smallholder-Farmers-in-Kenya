@@ -29,6 +29,7 @@ Route::middleware(['auth','farmer'])->group(function () {
 Route::middleware(['auth','agrovet'])->group(function () {
     Route::get('/register-as-an-agrovet', [AgrovetController::class, 'create'])->name('agrovet.create');
     Route::post('/register-as-an-agrovet', [AgrovetController::class, 'store'])->name('agrovet.store');
+    Route::post('/agrovet/profile/update', [AgrovetController::class, 'update'])->name('agrovet.update');
 });
 
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
