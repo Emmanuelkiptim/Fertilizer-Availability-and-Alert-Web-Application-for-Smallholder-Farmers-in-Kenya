@@ -18,4 +18,7 @@ class Agrovet extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+    public function fertilizers(){
+        return $this->hasMany(Fertilizer::class, 'agrovet_id', 'id');
+    }
 }

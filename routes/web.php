@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\AgrovetController;
+use App\Http\Controllers\FertilizerController;
 
 Route::get('/', function () {
     return view('auth.register');
@@ -30,6 +31,14 @@ Route::middleware(['auth','agrovet'])->group(function () {
     Route::get('/register-as-an-agrovet', [AgrovetController::class, 'create'])->name('agrovet.create');
     Route::post('/register-as-an-agrovet', [AgrovetController::class, 'store'])->name('agrovet.store');
     Route::post('/agrovet/profile/update', [AgrovetController::class, 'update'])->name('agrovet.update');
+    //Fertilizer
+    Route::get('/fertilizers', [FertilizerController::class, 'index'])->name('fertilizers.index');
+    Route::get('/fertilizers/create', [FertilizerController::class, 'create'])->name('fertilizers.create');
+    Route::post('/fertilizers', [FertilizerController::class, 'store'])->name('fertilizers.store');
+    Route::get('/fertilizers/{id}', [FertilizerController::class, 'show'])->name('fertilizers.show');
+    Route::get('/fertilizers/{id}/edit', [FertilizerController::class, 'edit'])->name('fertilizers.edit');
+    Route::put('/fertilizers/{id}', [FertilizerController::class, 'update'])->name('fertilizers.update');
+
 });
 
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
