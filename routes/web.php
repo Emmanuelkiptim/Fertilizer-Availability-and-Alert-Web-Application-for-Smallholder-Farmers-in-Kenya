@@ -25,6 +25,10 @@ Route::middleware(['auth','farmer'])->group(function () {
     Route::get('/register-as-a-farmer', [FarmerController::class, 'create'])->name('farmer.create');
     Route::post('/register-as-a-farmer', [FarmerController::class, 'store'])->name('farmer.store');
     Route::post('/profile/update-phone', [FarmerController::class, 'update'])->name('farmer.update');
+    //view fertilizers
+    Route::get('/farmers/fertilizers', [FarmerController::class, 'listFertilizers'])->name('farmers.fertilizers.index');
+    Route::get('/farmers/fertilizers/{id}', [FarmerController::class, 'showFertilizer'])->name('farmers.fertilizers.show');
+
 });
 //agrovet registration
 Route::middleware(['auth','agrovet'])->group(function () {
@@ -32,12 +36,12 @@ Route::middleware(['auth','agrovet'])->group(function () {
     Route::post('/register-as-an-agrovet', [AgrovetController::class, 'store'])->name('agrovet.store');
     Route::post('/agrovet/profile/update', [AgrovetController::class, 'update'])->name('agrovet.update');
     //Fertilizer
-    Route::get('/fertilizers', [FertilizerController::class, 'index'])->name('fertilizers.index');
-    Route::get('/fertilizers/create', [FertilizerController::class, 'create'])->name('fertilizers.create');
-    Route::post('/fertilizers', [FertilizerController::class, 'store'])->name('fertilizers.store');
-    Route::get('/fertilizers/{id}', [FertilizerController::class, 'show'])->name('fertilizers.show');
-    Route::get('/fertilizers/{id}/edit', [FertilizerController::class, 'edit'])->name('fertilizers.edit');
-    Route::put('/fertilizers/{id}', [FertilizerController::class, 'update'])->name('fertilizers.update');
+    Route::get('agrovet/fertilizers', [FertilizerController::class, 'index'])->name('fertilizers.index');
+    Route::get('agrovet/fertilizers/create', [FertilizerController::class, 'create'])->name('fertilizers.create');
+    Route::post('agrovet/fertilizers', [FertilizerController::class, 'store'])->name('fertilizers.store');
+    Route::get('agrovet/fertilizers/{id}', [FertilizerController::class, 'show'])->name('fertilizers.show');
+    Route::get('agrovet/fertilizers/{id}/edit', [FertilizerController::class, 'edit'])->name('fertilizers.edit');
+    Route::put('agrovet/fertilizers/{id}', [FertilizerController::class, 'update'])->name('fertilizers.update');
 
 });
 

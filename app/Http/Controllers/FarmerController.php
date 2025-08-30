@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Farmer;
+use App\Models\Fertilizer;
+
 
 class FarmerController extends Controller
 {
@@ -51,6 +53,16 @@ class FarmerController extends Controller
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Farmer information updated successfully');
+    }
+    public function listFertilizers(){
+
+        $fertilizers = Fertilizer::where('qty', '>', 0)->get();
+
+        return view('farmer.fertilizers.fertilizersindex', compact('fertilizers'));
+    }
+    public function showFertilizer($id){
+        $fertilizer = Fertilizer::with('agrovet')->findOrFail($id);
+        return view('farmer.fertilizers.fertilizershow', compact('fertilizer'));
     }
 
 }
