@@ -6,7 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FarmerController;
 use App\Http\Controllers\AgrovetController;
 use App\Http\Controllers\FertilizerController;
-
+use App\Http\Controllers\OrderController;
 Route::get('/', function () {
     return view('auth.register');
 });
@@ -27,7 +27,12 @@ Route::middleware(['auth','farmer'])->group(function () {
     Route::post('/profile/update-phone', [FarmerController::class, 'update'])->name('farmer.update');
     //view fertilizers
     Route::get('/farmers/fertilizers', [FarmerController::class, 'listFertilizers'])->name('farmers.fertilizers.index');
-    Route::get('/farmers/fertilizers/{id}', [FarmerController::class, 'showFertilizer'])->name('farmers.fertilizers.show');
+    Route::get('/farmers/fertilizers/{fertilizer_id}', [FarmerController::class, 'showFertilizer'])->name('farmers.fertilizers.show');
+    //orderfertilizer
+    Route::get('/fertilizers/{fertilizer_id}/order', [OrderController::class, 'create'])->name('orders.create');
+    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.myOrders');
+
 
 });
 //agrovet registration

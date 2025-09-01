@@ -21,4 +21,7 @@ class Agrovet extends Model
     public function fertilizers(){
         return $this->hasMany(Fertilizer::class, 'agrovet_id', 'id');
     }
+    public function orders(){
+        return $this->hasMany(Order::class, 'agrovet_id');
+    }
 }

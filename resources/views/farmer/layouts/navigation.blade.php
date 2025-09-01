@@ -18,7 +18,10 @@
                     <x-nav-link :href="route('farmers.fertilizers.index')" :active="request()->routeIs('farmers.fertilizers.index')">
                         {{ __('Fertilizers') }}
                     </x-nav-link>
-                    
+                    <x-nav-link :href="route('orders.myOrders')" :active="request()->routeIs('orders.myOrders')">
+                        {{ __('My Orders') }}
+                    </x-nav-link>
+
                 </div>
             </div>
 

@@ -24,4 +24,7 @@ class Fertilizer extends Model
     public function agrovet(){
         return $this->belongsTo(Agrovet::class);
     }
+    public function orders(){
+        return $this->hasMany(Order::class, 'fertilizer_id');
+    }
 }
