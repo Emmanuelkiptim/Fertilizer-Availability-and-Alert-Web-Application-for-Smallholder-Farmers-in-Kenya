@@ -47,6 +47,10 @@ Route::middleware(['auth','agrovet'])->group(function () {
     Route::get('agrovet/fertilizers/{id}', [FertilizerController::class, 'show'])->name('fertilizers.show');
     Route::get('agrovet/fertilizers/{id}/edit', [FertilizerController::class, 'edit'])->name('fertilizers.edit');
     Route::put('agrovet/fertilizers/{id}', [FertilizerController::class, 'update'])->name('fertilizers.update');
+    //agrovet orders
+    Route::get('agrovet/orders', [OrderController::class, 'agrovetOrders'])->name('agrovet.orders');
+    Route::post('agrovet/orders/{id}/approve', [OrderController::class, 'approveOrder'])->name('orders.approve');
+    Route::post('agrovet/orders/{id}/reject', [OrderController::class, 'rejectOrder'])->name('orders.decline');
 
 });
 

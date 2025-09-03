@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Fertilizer;
 use App\Models\Farmer;
+use App\Models\Agrovet;
 use App\Http\Controllers\FertilizerController;
 use App\Http\Controllers\FarmerController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\AgrovetController; 
 
 class OrderController extends Controller
 {
@@ -29,9 +31,14 @@ class OrderController extends Controller
 
 
         $fertilizer = Fertilizer::findOrFail($request->fertilizer_id);
-    $farmer = \App\Models\Farmer::where('user_id', auth()->id())->firstOrFail();
-    $farmer_id = $farmer->id;
+        $farmer = \App\Models\Farmer::where('user_id', auth()->id())->firstOrFail();
+        $farmer_id = $farmer->id;
         $agrovet_id = $fertilizer->agrovet_id;
+
+        // Check if requested quantity exceeds available stock
+        if ($request->quantity > $fertilizer->qty) {
+            return redirect()->back()->withInput()->with('error', 'Your order exceeds the number available in stock.');
+        }
 
         $total = $fertilizer->price * $request->quantity;
 
@@ -44,7 +51,7 @@ class OrderController extends Controller
             'status' => 'pending'
         ]);
 
-    return redirect()->route('orders.myOrders')->with('success', 'Order placed successfully!');
+        return redirect()->route('orders.myOrders')->with('success', 'Order placed successfully!');
     }
     public function myOrders()
         {
@@ -54,4 +61,49 @@ class OrderController extends Controller
 
             return view('farmer.order.my_orders', compact('orders'));
         }
+    public function agrovetOrders(){
+        $agrovet = Agrovet::where('user_id', Auth::id())->first();
+
+        if(!$agrovet){
+            abort(404, __('Not Authorized.'));
+        }
+
+        $orders = Order::where('agrovet_id', $agrovet->id)->with('fertilizer', 'farmer')->latest()->get();
+        return view('agrovet.orders.agrovet_orders', compact('orders'));
+    }
+    public function approveOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        $agrovet = Agrovet::where('user_id', Auth::id())->first();
+
+        if($order->agrovet_id != $agrovet->id){
+            abort(404, __('Not Authorized.'));
+        }
+        //approval of order
+        $order->status = 'approved';
+        $order->save();
+        //reduce stock
+        $fertilizer = $order->fertilizer;
+        if($fertilizer->qty>=$order->quantity){
+            $fertilizer->qty -= $order->quantity;
+            $fertilizer->save();
+        }
+        return redirect()->back()->with('success', 'Order approved successfully!');
+
+    }
+    public function rejectOrder($id)
+    {
+        $order = Order::findOrFail($id);
+        $agrovet = Agrovet::where('user_id', Auth::id())->first();
+
+        if($order->agrovet_id != $agrovet->id){
+            abort(404, __('Not Authorized.'));
+        }
+        //reject order
+        $order->status = 'rejected';
+        $order->save();
+
+        return redirect()->back()->with('success', 'Order rejected successfully!');
+    }
+
 }
