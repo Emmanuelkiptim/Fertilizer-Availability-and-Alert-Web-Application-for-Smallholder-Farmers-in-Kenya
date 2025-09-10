@@ -88,9 +88,14 @@ class OrderController extends Controller
             $fertilizer->qty -= $order->quantity;
             $fertilizer->save();
         }
+        // Update availability
+        $fertilizer->availability = $fertilizer->qty > 0 ? 'Available' : 'Not Available';
+
+        $fertilizer->save();
         return redirect()->back()->with('success', 'Order approved successfully!');
 
     }
+    
     public function rejectOrder($id)
     {
         $order = Order::findOrFail($id);

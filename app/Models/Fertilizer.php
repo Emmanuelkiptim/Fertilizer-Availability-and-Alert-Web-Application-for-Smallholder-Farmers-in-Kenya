@@ -20,6 +20,12 @@ class Fertilizer extends Model
         'availability' => 'boolean',
         'price'        => 'decimal:2',
     ];
+    protected static function booted()
+    {
+        static::saving(function ($fertilizer) {
+            $fertilizer->availability = $fertilizer->qty > 0 ? 1 : 0;
+        });
+    }
 
     public function agrovet(){
         return $this->belongsTo(Agrovet::class);

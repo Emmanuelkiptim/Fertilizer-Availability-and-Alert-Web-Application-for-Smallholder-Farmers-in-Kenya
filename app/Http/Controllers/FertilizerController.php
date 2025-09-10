@@ -55,7 +55,7 @@ class FertilizerController extends Controller
             'type'         => 'required|string|max:255',
             'qty'          => 'required|integer|min:0',
             'price'        => 'required|numeric|min:0',
-            'availability' => 'required|boolean',
+            // 'availability' => 'required|boolean',
         ]);
 
         $agrovetId = $this->currentAgrovetId();
@@ -66,7 +66,7 @@ class FertilizerController extends Controller
             'type'         => $request->type,
             'qty'          => $request->qty,
             'price'        => $request->price,
-            'availability' => $request->availability,
+            // 'availability' => $request->availability,
         ]);
 
         return redirect()->route('fertilizers.index')
@@ -115,12 +115,23 @@ class FertilizerController extends Controller
         $validated = $request->validate([
             'name'         => 'required|string|max:255',
             'type'         => 'required|string|max:255',
-            'qty'          => 'required|integer|min:0',
+            'add_qty'      => 'nullable|integer|min:0',
             'price'        => 'required|numeric|min:0',
-            'availability' => 'required|boolean',
         ]);
 
-        $fertilizer->update($validated);
+        // Only add to qty if add_qty is provided and > 0
+        $newQty = $fertilizer->qty;
+        if (!empty($validated['add_qty']) && $validated['add_qty'] > 0) {
+            $newQty += $validated['add_qty'];
+        }
+
+        $fertilizer->update([
+            'name' => $validated['name'],
+            'type' => $validated['type'],
+            'qty'  => $newQty,
+            'price' => $validated['price'],
+            'availability' => $newQty > 0 ? 1 : 0,
+        ]);
 
         return redirect()->route('fertilizers.show', $fertilizer->fertilizer_id)
                          ->with('success', 'Fertilizer updated successfully.');
