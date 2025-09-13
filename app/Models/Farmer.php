@@ -17,4 +17,9 @@ class Farmer extends Model
     public function user(){
         return $this->belongsTo(User::class);
     }
+    public function favourites()
+{
+    return $this->belongsToMany(Fertilizer::class, 'favourites', 'farmer_id', 'fertilizer_id')
+                ->withTimestamps();
+}
 }

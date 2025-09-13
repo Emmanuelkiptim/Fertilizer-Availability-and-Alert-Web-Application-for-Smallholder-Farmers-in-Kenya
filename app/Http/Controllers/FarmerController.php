@@ -56,9 +56,20 @@ class FarmerController extends Controller
     }
     public function listFertilizers(){
 
-        $fertilizers = Fertilizer::where('qty', '>', 0)->get();
+        // $fertilizers = Fertilizer::where('qty', '>', 0)->get();
 
-        return view('farmer.fertilizers.fertilizersindex', compact('fertilizers'));
+        // return view('farmer.fertilizers.fertilizersindex', compact('fertilizers'));
+        $farmer = auth()->user()->farmer;
+
+    // Get the farmer’s favourite fertilizers
+    $favourites = $farmer->favourites()->get();
+
+    // Get all other fertilizers (not favourites)
+    $fertilizers = Fertilizer::where('qty', '>', 0)
+        ->whereNotIn('fertilizer_id', $favourites->pluck('fertilizer_id'))
+        ->get();
+
+    return view('farmer.fertilizers.fertilizersindex', compact('fertilizers', 'favourites'));
     }
     public function showFertilizer($id){
         $fertilizer = Fertilizer::with('agrovet')->findOrFail($id);

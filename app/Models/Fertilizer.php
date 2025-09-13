@@ -33,4 +33,10 @@ class Fertilizer extends Model
     public function orders(){
         return $this->hasMany(Order::class, 'fertilizer_id');
     }
+    public function favouritedBy()
+{
+    return $this->belongsToMany(Farmer::class, 'favourites', 'fertilizer_id', 'farmer_id')
+                ->withTimestamps();
+}
+
 }

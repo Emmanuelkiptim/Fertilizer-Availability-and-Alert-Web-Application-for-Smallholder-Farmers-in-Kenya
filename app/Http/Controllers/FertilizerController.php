@@ -37,9 +37,7 @@ class FertilizerController extends Controller
         return view('agrovet.fertilizers.index', compact('fertilizers'));
     }
 
-    /**
-     * Show the "create" form.
-     */
+   
     public function create()
     {
         return view('agrovet.fertilizers.create');

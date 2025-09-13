@@ -53,7 +53,13 @@
                     <div class="mt-8 flex gap-4">
                         <a href="{{ route('orders.create', ['fertilizer_id' => $fertilizer->fertilizer_id]) }}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">Order This Fertilizer</a>
                         <a href="{{ route('farmers.fertilizers.index') }}" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">⬅ Back to Fertilizers List</a>
-                    </div>
+                        <form action="{{ route('favourites.toggle', $fertilizer->fertilizer_id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-warning">
+                                ⭐ {{ Auth::user()->farmer->favourites->contains($fertilizer->fertilizer_id) ? 'Remove from Favourites' : 'Add to Favourites' }}
+                        </button>
+                        </form>
+                        </div>
                 </div>
             </div>
         </div>
