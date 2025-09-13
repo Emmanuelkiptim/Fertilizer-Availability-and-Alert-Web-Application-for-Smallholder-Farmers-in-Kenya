@@ -45,7 +45,7 @@
             <select name="role" id="role" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                 <option value="farmer">Farmer</option>
                 <option value="agrovet">Agrovet</option>
-                <option value="admin">Admin</option>
+                
             </select>
         </div>
 

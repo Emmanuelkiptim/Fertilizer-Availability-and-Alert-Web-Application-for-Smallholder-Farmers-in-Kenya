@@ -13,7 +13,7 @@ class UserController extends Controller
            return view ('farmer.farmer-dashboard'); 
         }
         else if(Auth::check() && Auth::user()->role=='admin'){
-           return view ('admin.admin-dashboard'); 
+           return view ('admin.dashboard'); 
         }
         else if(Auth::check() && Auth::user()->role=='agrovet'){
            return view ('agrovet.agrovet-dashboard'); 

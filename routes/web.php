@@ -21,8 +21,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
-//farmer registration
+//farmer routes
 Route::middleware(['auth','farmer'])->group(function () {
+    //farmer registration
     Route::get('/register-as-a-farmer', [FarmerController::class, 'create'])->name('farmer.create');
     Route::post('/register-as-a-farmer', [FarmerController::class, 'store'])->name('farmer.store');
     Route::post('/profile/update-phone', [FarmerController::class, 'update'])->name('farmer.update');
@@ -39,8 +40,9 @@ Route::middleware(['auth','farmer'])->group(function () {
 
 
 });
-//agrovet registration
+//agrovet routes
 Route::middleware(['auth','agrovet'])->group(function () {
+    //agrovet registration
     Route::get('/register-as-an-agrovet', [AgrovetController::class, 'create'])->name('agrovet.create');
     Route::post('/register-as-an-agrovet', [AgrovetController::class, 'store'])->name('agrovet.store');
     Route::post('/agrovet/profile/update', [AgrovetController::class, 'update'])->name('agrovet.update');
@@ -56,6 +58,13 @@ Route::middleware(['auth','agrovet'])->group(function () {
     Route::post('agrovet/orders/{id}/approve', [OrderController::class, 'approveOrder'])->name('orders.approve');
     Route::post('agrovet/orders/{id}/reject', [OrderController::class, 'rejectOrder'])->name('orders.decline');
 
+});
+//admin routes
+// Route::get('/admin', function () {
+//     return view('admin.dashboard');
+// })->middleware('auth');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
 });
 
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
