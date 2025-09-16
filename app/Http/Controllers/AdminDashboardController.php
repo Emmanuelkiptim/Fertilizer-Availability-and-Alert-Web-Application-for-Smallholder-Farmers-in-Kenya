@@ -5,18 +5,26 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Fertilizer;
 use App\Models\Order;
+use Carbon\Carbon;
 class AdminDashboardController extends Controller
 {
     //
     public function AdminDashboard()
 {
     if (Auth::check() && Auth::user()->role == 'admin') {
+        // Fetch statistics
+        $usersCount = User::count();
         $farmersCount = User::where('role', 'farmer')->count();
         $agrovetsCount = User::where('role', 'agrovet')->count();
         $fertilizersCount = Fertilizer::count();
         $ordersCount = Order::count();
+        //new users registration stats daily
+        $usersByDay = User::selectRaw('COUNT(id) as total, DATE(created_at) as day')
+        ->groupBy('day')
+        ->orderBy('day', 'ASC')
+        ->pluck('total', 'day');
 
-        return view('admin.dashboard', compact('farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount'));
+        return view('admin.dashboard', compact('usersCount', 'farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount', 'usersByDay'));
     } else {
         return redirect('/');
     }

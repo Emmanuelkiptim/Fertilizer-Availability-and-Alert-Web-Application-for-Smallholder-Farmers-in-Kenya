@@ -18,8 +18,54 @@
                         </div>
                         <div>
                             <label for="type" class="block text-gray-700 dark:text-gray-200 mb-2">Type</label>
-                            <input type="text" name="type" id="type" value="{{ old('type') }}" required class="w-full p-2 border rounded dark:bg-gray-700 dark:text-gray-100">
-                            @error('type') <div class="text-red-600 text-sm mt-1">{{ $message }}</div> @enderror
+                            <select name="type" id="type" required 
+                                class="w-full p-2 border rounded dark:bg-gray-700 dark:text-gray-100">
+                                
+                                <optgroup label="Based on Nutrient Content">
+                                    <option value="single_nutrient_nitrogen" {{ old('type')=='single_nutrient_nitrogen' ? 'selected' : '' }}>
+                                        Single-Nutrient Fertilizers / Nitrogen Fertilizers
+                                    </option>
+                                    <option value="single_nutrient_phosphorus" {{ old('type')=='single_nutrient_phosphorus' ? 'selected' : '' }}>
+                                        Single-Nutrient Fertilizers / Phosphorus Fertilizers
+                                    </option>
+                                    <option value="single_nutrient_potassium" {{ old('type')=='single_nutrient_potassium' ? 'selected' : '' }}>
+                                        Single-Nutrient Fertilizers / Potassium Fertilizers
+                                    </option>
+                                    <option value="compound_multi" {{ old('type')=='compound_multi' ? 'selected' : '' }}>
+                                        Compound / Multi-Nutrient Fertilizers
+                                    </option>
+                                </optgroup>
+
+                                <optgroup label="Based on Origin">
+                                    <option value="inorganic" {{ old('type')=='inorganic' ? 'selected' : '' }}>Inorganic Fertilizers</option>
+                                    <option value="organic" {{ old('type')=='organic' ? 'selected' : '' }}>Organic Fertilizers</option>
+                                </optgroup>
+
+                                <optgroup label="Based on Release Mechanism">
+                                    <option value="quick_release" {{ old('type')=='quick_release' ? 'selected' : '' }}>Quick-release Fertilizers</option>
+                                    <option value="slow_release" {{ old('type')=='slow_release' ? 'selected' : '' }}>Slow-release Fertilizers</option>
+                                    <option value="controlled_release" {{ old('type')=='controlled_release' ? 'selected' : '' }}>Controlled-release Fertilizers</option>
+                                    <option value="liquid" {{ old('type')=='liquid' ? 'selected' : '' }}>Liquid Fertilizers</option>
+                                </optgroup>
+
+                                <optgroup label="Based on Nutrient Function">
+                                    <option value="primary" {{ old('type')=='primary' ? 'selected' : '' }}>Primary Nutrient Fertilizers</option>
+                                    <option value="secondary" {{ old('type')=='secondary' ? 'selected' : '' }}>Secondary Nutrient Fertilizers</option>
+                                    <option value="micronutrient" {{ old('type')=='micronutrient' ? 'selected' : '' }}>Micronutrient Fertilizers</option>
+                                </optgroup>
+
+                                <optgroup label="Specialty Fertilizers">
+                                    <option value="bio" {{ old('type')=='bio' ? 'selected' : '' }}>Biofertilizers</option>
+                                    <option value="chelated" {{ old('type')=='chelated' ? 'selected' : '' }}>Chelated Fertilizers</option>
+                                    <option value="foliar" {{ old('type')=='foliar' ? 'selected' : '' }}>Foliar Fertilizers</option>
+                                    <option value="water_soluble" {{ old('type')=='water_soluble' ? 'selected' : '' }}>Water-soluble Fertilizers</option>
+                                </optgroup>
+
+                            </select>
+
+                            @error('type') 
+                                <div class="text-red-600 text-sm mt-1">{{ $message }}</div> 
+                            @enderror
                         </div>
                         <div>
                             <label for="qty" class="block text-gray-700 dark:text-gray-200 mb-2">Quantity</label>
