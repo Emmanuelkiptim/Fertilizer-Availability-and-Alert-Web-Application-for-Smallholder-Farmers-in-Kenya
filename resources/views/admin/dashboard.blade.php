@@ -92,5 +92,49 @@
         }
     });
 </script>
+<div class="card">
+    <div class="card-header">Top Farmers by Engagement</div>
+    <div class="card-body">
+        <canvas id="topFarmersChart"></canvas>
+    </div>
+</div>
+
+<script>
+    const ctxFarmers = document.getElementById('topFarmersChart').getContext('2d');
+    new Chart(ctxFarmers, {
+        type: 'bar',
+        data: {
+            labels: @json($farmerNames),
+            datasets: [{
+                label: 'Engagement Score',
+                data: @json($engagementScores),
+                backgroundColor: 'rgb(40, 167, 69)',
+                borderColor: 'black',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let index = context.dataIndex;
+                            let orders = @json($orders)[index];
+                            let favorites = @json($favorites)[index];
+                            let engagement = context.raw;
+                            return `Engagement: ${engagement} (Orders: ${orders}, Favorites: ${favorites})`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+
 
 @stop

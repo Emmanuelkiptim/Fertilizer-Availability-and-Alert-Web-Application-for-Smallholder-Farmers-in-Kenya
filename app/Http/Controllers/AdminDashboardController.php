@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Fertilizer;
 use App\Models\Order;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 class AdminDashboardController extends Controller
 {
     //
@@ -13,19 +14,44 @@ class AdminDashboardController extends Controller
 {
     if (Auth::check() && Auth::user()->role == 'admin') {
         // Fetch statistics
-        $usersCount = User::count();
-        $farmersCount = User::where('role', 'farmer')->count();
-        $agrovetsCount = User::where('role', 'agrovet')->count();
-        $fertilizersCount = Fertilizer::count();
-        $ordersCount = Order::count();
+            $usersCount = User::count();
+            $farmersCount = User::where('role', 'farmer')->count();
+            $agrovetsCount = User::where('role', 'agrovet')->count();
+            $fertilizersCount = Fertilizer::count();
+            $ordersCount = Order::count();
         //new users registration stats daily
-        $usersByDay = User::selectRaw('COUNT(id) as total, DATE(created_at) as day')
-        ->groupBy('day')
-        ->orderBy('day', 'ASC')
-        ->pluck('total', 'day');
-
-        return view('admin.dashboard', compact('usersCount', 'farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount', 'usersByDay'));
-    } else {
+            $usersByDay = User::selectRaw('COUNT(id) as total, DATE(created_at) as day')
+            ->groupBy('day')
+            ->orderBy('day', 'ASC')
+            ->pluck('total', 'day');
+        // Get top 5 farmers based on engagement (orders + favorites)
+            $topFarmers = \DB::table('farmers')
+                ->join('users', 'farmers.user_id', '=', 'users.id') // join to parent users table
+                ->leftJoin('favourites', 'favourites.farmer_id', '=', 'farmers.id')
+                ->leftJoin('orders', 'orders.farmer_id', '=', 'farmers.id')
+                ->select(
+                    'farmers.id',
+                    'users.name',
+                    DB::raw('COUNT(DISTINCT favourites.id) as favorites_count'),
+                    DB::raw('COUNT(DISTINCT orders.order_id) as orders_count')
+                )
+                ->groupBy('farmers.id', 'users.name')
+                ->get()
+                ->map(function ($farmer) {
+                    $farmer->engagement_score = $farmer->favorites_count + $farmer->orders_count;
+                    return $farmer;
+                })
+                ->sortByDesc('engagement_score')
+                ->take(5);
+                $farmerNames = $topFarmers->pluck('name');
+                $engagementScores = $topFarmers->pluck('engagement_score');
+                $orders = $topFarmers->pluck('orders_count');
+                $favorites = $topFarmers->pluck('favorites_count');
+                
+        //pass data to view
+            return view('admin.dashboard', compact('usersCount', 'farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount', 'usersByDay', 'topFarmers', 'farmerNames', 'engagementScores', 'orders', 'favorites'));
+    } 
+    else {
         return redirect('/');
     }
 }
