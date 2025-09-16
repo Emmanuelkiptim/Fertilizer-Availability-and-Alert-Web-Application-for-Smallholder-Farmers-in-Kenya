@@ -26,7 +26,7 @@ class AdminDashboardController extends Controller
             ->pluck('total', 'day');
         // Get top 5 farmers based on engagement (orders + favorites)
             $topFarmers = \DB::table('farmers')
-                ->join('users', 'farmers.user_id', '=', 'users.id') // join to parent users table
+                ->join('users', 'farmers.user_id', '=', 'users.id') // joined with users table
                 ->leftJoin('favourites', 'favourites.farmer_id', '=', 'farmers.id')
                 ->leftJoin('orders', 'orders.farmer_id', '=', 'farmers.id')
                 ->select(
