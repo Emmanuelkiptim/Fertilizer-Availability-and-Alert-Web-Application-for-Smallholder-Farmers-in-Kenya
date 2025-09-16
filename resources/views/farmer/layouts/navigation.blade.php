@@ -77,6 +77,12 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('farmers.fertilizers.index')" :active="request()->routeIs('farmers.fertilizers.index')">
+                {{ __('Fertilizers') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('orders.myOrders')" :active="request()->routeIs('orders.myOrders')">
+                {{ __('My Orders') }}
+            </x-responsive-nav-link>
             
         </div>
 

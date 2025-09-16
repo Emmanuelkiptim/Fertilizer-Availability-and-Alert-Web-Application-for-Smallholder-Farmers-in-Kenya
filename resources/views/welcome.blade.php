@@ -5,6 +5,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Laravel</title>
+        <style>
+            @media (max-width: 768px) {
+                body {
+                    padding: 0.5rem !important;
+                }
+                header, main {
+                    max-width: 100% !important;
+                    padding: 0.5rem !important;
+                }
+                h1 {
+                    font-size: 1.2rem !important;
+                }
+                ul {
+                    padding-left: 0 !important;
+                }
+            }
+        </style>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

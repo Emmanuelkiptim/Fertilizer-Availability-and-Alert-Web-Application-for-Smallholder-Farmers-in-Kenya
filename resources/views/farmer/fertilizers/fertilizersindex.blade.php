@@ -17,7 +17,7 @@
                         <p class="text-gray-600 dark:text-gray-300 text-center">You have no favourite fertilizers yet.</p>
                     @else
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mx-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mx-auto table-auto">
                                 <thead class="bg-gray-50 dark:bg-gray-700">
                                     <tr>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fertilizer</th>
@@ -29,6 +29,26 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+@section('css')
+    <style>
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            table {
+                font-size: 0.9rem;
+            }
+            th, td {
+                padding: 0.3rem 0.5rem !important;
+                white-space: nowrap;
+            }
+            .btn {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.6rem;
+            }
+        }
+    </style>
+@endsection
                                     @foreach($favourites as $fertilizer)
                                         <tr>
                                             <td class="px-4 py-2 font-semibold">{{ $fertilizer->name }}</td>
