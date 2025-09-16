@@ -8,6 +8,7 @@ use App\Http\Controllers\AgrovetController;
 use App\Http\Controllers\FertilizerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FavouriteController;
+use App\Http\Controllers\AdminDashboardController;
 Route::get('/', function () {
     return view('auth.register');
 });
@@ -63,8 +64,13 @@ Route::middleware(['auth','agrovet'])->group(function () {
 // Route::get('/admin', function () {
 //     return view('admin.dashboard');
 // })->middleware('auth');
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Users Management
+    Route::get('/users', [AdminDashboardController::class, 'usersManagement'])->name('users.management');
+    Route::delete('/users/{id}', [AdminDashboardController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/add-admin', [AdminDashboardController::class, 'addAdmin'])->name('users.addAdmin');
+
+
 });
 
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
