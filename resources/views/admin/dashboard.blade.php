@@ -135,6 +135,60 @@
         }
     });
 </script>
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Top Performing Agrovets</h3>
+    </div>
+    <div class="card-body">
+        <canvas id="agrovetsChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctxAgrovets = document.getElementById('agrovetsChart').getContext('2d');
+    new Chart(ctxAgrovets, {
+        type: 'bar',
+        data: {
+            labels: @json($agrovetNames),
+            datasets: [
+                {
+                    label: 'Orders Approved',
+                    data: @json($ordersApproved),
+                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                },
+                {
+                    label: 'Fertilizers Listed',
+                    data: @json($fertilizersListed),
+                    backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                },
+                {
+                    label: 'Favorites Received',
+                    data: @json($favoritesCount),
+                    backgroundColor: 'rgba(153, 102, 255, 0.7)',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        footer: function (items) {
+                            let index = items[0].dataIndex;
+                            let score = @json($activityScores)[index];
+                            return 'Activity Score: ' + score;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+
 
 
 @stop

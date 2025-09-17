@@ -47,10 +47,35 @@ class AdminDashboardController extends Controller
                 $engagementScores = $topFarmers->pluck('engagement_score');
                 $orders = $topFarmers->pluck('orders_count');
                 $favorites = $topFarmers->pluck('favorites_count');
+            $topAgrovets=\DB::table('agrovets')
+                ->join('users', 'agrovets.user_id', '=', 'users.id') // joined with users table
+                ->leftJoin('fertilizers', 'fertilizers.agrovet_id', '=', 'agrovets.id')
+                ->leftJoin('orders', 'orders.agrovet_id', '=', 'agrovets.id')
+                ->leftJoin('favourites', 'favourites.fertilizer_id', '=', 'fertilizers.fertilizer_id')
+                ->select(
+                    'agrovets.id',
+                    'users.name',
+                    DB::raw('COUNT(DISTINCT orders.order_id) as orders_approved'),
+                    DB::raw('COUNT(DISTINCT fertilizers.fertilizer_id) as fertilizers_listed'),
+                    DB::raw('COUNT(DISTINCT favourites.id) as favorites_count')
+                )
+                ->groupBy('agrovets.id', 'users.name')
+                ->get()
+                ->map(function ($agrovet) {
+                    $agrovet->activity_score = $agrovet->orders_approved + $agrovet->fertilizers_listed + $agrovet->favorites_count;
+                    return $agrovet;
+                })
+                ->sortByDesc('activity_score')
+                ->take(5);
+                $agrovetNames = $topAgrovets->pluck('name');
+                $ordersApproved = $topAgrovets->pluck('orders_approved');
+                $fertilizersListed = $topAgrovets->pluck('fertilizers_listed');
+                $favoritesCount = $topAgrovets->pluck('favorites_count');
+                $activityScores = $topAgrovets->pluck('activity_score');
                 
         //pass data to view
-            return view('admin.dashboard', compact('usersCount', 'farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount', 'usersByDay', 'topFarmers', 'farmerNames', 'engagementScores', 'orders', 'favorites'));
-    } 
+        return view('admin.dashboard', compact('usersCount', 'farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount', 'usersByDay', 'topFarmers', 'farmerNames', 'engagementScores', 'orders', 'favorites', 'agrovetNames', 'ordersApproved', 'fertilizersListed', 'favoritesCount', 'activityScores'));
+    }
     else {
         return redirect('/');
     }
