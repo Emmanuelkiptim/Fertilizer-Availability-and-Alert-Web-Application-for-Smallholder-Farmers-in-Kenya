@@ -73,6 +73,7 @@ class FarmerController extends Controller
     }
     public function showFertilizer($id){
         $fertilizer = Fertilizer::with('agrovet')->findOrFail($id);
+        $farmer = auth()->user()->farmer;
         return view('farmer.fertilizers.fertilizershow', compact('fertilizer'));
     }
 
