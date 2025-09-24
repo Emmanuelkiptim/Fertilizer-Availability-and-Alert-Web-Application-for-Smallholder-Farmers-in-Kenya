@@ -18,8 +18,13 @@ class Farmer extends Model
         return $this->belongsTo(User::class);
     }
     public function favourites()
-{
-    return $this->belongsToMany(Fertilizer::class, 'favourites', 'farmer_id', 'fertilizer_id')
-                ->withTimestamps();
-}
+    {
+        return $this->belongsToMany(Fertilizer::class, 'favourites', 'farmer_id', 'fertilizer_id')
+                    ->withTimestamps();
+    }
+
+    public function alerts()
+    {
+        return $this->hasMany(\App\Models\Alert::class);
+    }
 }

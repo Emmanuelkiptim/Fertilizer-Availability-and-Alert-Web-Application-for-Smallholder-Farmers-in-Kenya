@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Fertilizer;
 use App\Models\Farmer;
 use App\Models\Agrovet;
+use App\Models\Alert;
 use App\Http\Controllers\FertilizerController;
 use App\Http\Controllers\FarmerController;
 use Illuminate\Support\Facades\Auth;
@@ -82,6 +83,16 @@ class OrderController extends Controller
         //approval of order
         $order->status = 'approved';
         $order->save();
+        // Create alert for farmer with fertilizer and agrovet details
+        $fertilizer = $order->fertilizer;
+        $agrovet = $order->agrovet;
+        $agrovetUser = $agrovet ? $agrovet->user : null;
+        $orderUrl = route('orders.myOrders');
+    $message = 'Your order #' . $order->id . ' for <b>' . ($fertilizer ? $fertilizer->name : 'Fertilizer') . '</b> at <b>' . ($agrovet ? $agrovet->shopname : 'Agrovet') . '</b> (by ' . ($agrovetUser ? $agrovetUser->name : 'Agrovet') . ') has been <b>approved</b>. <a href="' . $orderUrl . '" style="display:inline-block;padding:4px 12px;background:#2563eb;color:#fff;border-radius:4px;text-decoration:none;font-size:0.95em;margin-left:8px;">View Orders</a>';
+        Alert::create([
+            'farmer_id' => $order->farmer_id,
+            'message' => $message,
+        ]);
         //reduce stock
         $fertilizer = $order->fertilizer;
         if($fertilizer->qty>=$order->quantity){
@@ -105,8 +116,19 @@ class OrderController extends Controller
             abort(404, __('Not Authorized.'));
         }
         //reject order
+
         $order->status = 'rejected';
         $order->save();
+        // Create alert for farmer with fertilizer and agrovet details
+        $fertilizer = $order->fertilizer;
+        $agrovet = $order->agrovet;
+        $agrovetUser = $agrovet ? $agrovet->user : null;
+        $orderUrl = route('orders.myOrders');
+    $message = 'Your order #' . $order->order_id . ' for <b>' . ($fertilizer ? $fertilizer->name : 'Fertilizer') . '</b> at <b>' . ($agrovet ? $agrovet->shopname : 'Agrovet') . '</b> by ' . ($agrovetUser ? $agrovetUser->name : 'Agrovet') . ' has been <b>rejected</b>. <a href="' . $orderUrl . '" style="display:inline-block;padding:4px 12px;background:#2563eb;color:#fff;border-radius:4px;text-decoration:none;font-size:0.95em;margin-left:8px;">View Orders</a>';
+        Alert::create([
+            'farmer_id' => $order->farmer_id,
+            'message' => $message,
+        ]);
 
         return redirect()->back()->with('success', 'Order rejected successfully!');
     }

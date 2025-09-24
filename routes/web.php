@@ -24,6 +24,9 @@ Route::middleware('auth')->group(function () {
 Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 //farmer routes
 Route::middleware(['auth','farmer'])->group(function () {
+    // Alerts
+    Route::get('/farmer/alerts', [App\Http\Controllers\AlertController::class, 'index'])->name('alerts.index');
+    Route::post('/farmer/alerts/{id}/read', [App\Http\Controllers\AlertController::class, 'markAsRead'])->name('alerts.markAsRead');
     //farmer registration
     Route::get('/register-as-a-farmer', [FarmerController::class, 'create'])->name('farmer.create');
     Route::post('/register-as-a-farmer', [FarmerController::class, 'store'])->name('farmer.store');

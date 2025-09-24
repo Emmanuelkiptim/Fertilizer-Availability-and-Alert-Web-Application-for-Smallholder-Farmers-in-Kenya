@@ -11,7 +11,9 @@ class UserController extends Controller
      //
      public function Dashboard(){
           if(Auth::check() && Auth::user()->role=='farmer'){
-              return view ('farmer.farmer-dashboard'); 
+              $farmer = Auth::user()->farmer;
+              $alerts = $farmer ? $farmer->alerts()->latest()->take(5)->get() : collect();
+              return view('farmer.farmer-dashboard', compact('alerts'));
           }
           else if(Auth::check() && Auth::user()->role=='admin'){
               return app(AdminDashboardController::class)->AdminDashboard(); 
