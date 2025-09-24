@@ -22,9 +22,10 @@
                                     <tr>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fertilizer</th>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Type</th>
-                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price</th>
-                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Qty Available</th>
-                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Agrovet</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price (KES)</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Agrovet Name</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity Available</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Distance (km)</th>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
                                     </tr>
                                 </thead>
@@ -53,12 +54,10 @@
                                         <tr>
                                             <td class="px-4 py-2 font-semibold">{{ $fertilizer->name }}</td>
                                             <td class="px-4 py-2">{{ $fertilizer->type }}</td>
-                                            <td class="px-4 py-2">Ksh {{ number_format($fertilizer->price) }}</td>
+                                            <td class="px-4 py-2"> {{ number_format($fertilizer->price) }} Ksh</td>
+                                            <td class="px-4 py-2">{{ $fertilizer->agrovet->user->name ?? 'Unknown' }}</td>
                                             <td class="px-4 py-2">{{ $fertilizer->qty }}</td>
-                                            <td class="px-4 py-2">
-                                                {{ $fertilizer->agrovet->user->name ?? 'Unknown' }}<br>
-                                                <small>{{ $fertilizer->agrovet->phone ?? '' }}</small>
-                                            </td>
+                                            <td class="px-4 py-2">{{ $fertilizer->distance }} km</td>
                                             <td class="px-4 py-2">
                                                 <a href="{{ route('farmers.fertilizers.show', $fertilizer->fertilizer_id) }}" 
                                                 class="text-blue-500 hover:underline">View Details</a>
@@ -87,11 +86,13 @@
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Name</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Fertilizer</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Type</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
                                     <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Price (KES)</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Availability</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Agrovet Name</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity Available</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Distance (km)</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -99,9 +100,10 @@
                                     <tr>
                                         <td class="px-4 py-2 font-semibold">{{ $fertilizer->name }}</td>
                                         <td class="px-4 py-2">{{ $fertilizer->type }}</td>
+                                        <td class="px-4 py-2">{{ $fertilizer->price }} Ksh</td>
+                                        <td class="px-4 py-2">{{ $fertilizer->agrovet->user->name ?? 'Unknown' }}</td>
                                         <td class="px-4 py-2">{{ $fertilizer->qty }}</td>
-                                        <td class="px-4 py-2">{{ $fertilizer->price }}</td>
-                                        <td class="px-4 py-2">{{ $fertilizer->availability ? 'Available' : 'Unavailable' }}</td>
+                                        <td class="px-4 py-2">{{ $fertilizer->distance }} km</td>
                                         <td class="px-4 py-2">
                                             <a href="{{ route('farmers.fertilizers.show', $fertilizer->fertilizer_id) }}" 
                                             class="text-blue-500 hover:underline">View Details</a>

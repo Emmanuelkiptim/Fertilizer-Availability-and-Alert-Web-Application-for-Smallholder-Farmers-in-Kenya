@@ -8,8 +8,8 @@
 
 @section('content')
 <div class="row">
-    <div class="col-lg-2 col-6">
-        <div class="small-box bg-success">
+    <div class="col-lg-2 col-6 ">
+        <div class="small-box" style="background-color: #4B0082; color: #fff;">
             <div class="inner">
                 <h3>{{ $usersCount }}</h3>
                 <p>Total Users</p>

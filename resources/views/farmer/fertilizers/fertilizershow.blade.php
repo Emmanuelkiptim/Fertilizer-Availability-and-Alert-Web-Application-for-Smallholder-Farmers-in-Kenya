@@ -107,16 +107,24 @@
                             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
                               // helps distribute load
                         }).addTo(map);
-                        // Agrovet marker
-                        L.marker([{{ $fertilizer->agrovet->location_latitude }}, {{ $fertilizer->agrovet->location_longitude }}])
+                        // Custom red icon for Agrovet
+                        var redIcon = L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                            shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        });
+                        L.marker([{{ $fertilizer->agrovet->location_latitude }}, {{ $fertilizer->agrovet->location_longitude }}], {icon: redIcon})
                             .addTo(map)
-                            .bindPopup("Agrovet Location");
+                            .bindPopup("Agrovet Location")
+                            .openPopup();
 
                         // Farmer marker
                         L.marker([{{ Auth::user()->farmer->location_latitude }}, {{ Auth::user()->farmer->location_longitude }}])
                             .addTo(map)
-                            .bindPopup("Farmer Location")
-                            .openPopup();
+                            .bindPopup("Your Location")
 
                         // Fetch route from ORS
                         async function getRoute() {
