@@ -88,7 +88,7 @@ class OrderController extends Controller
         $agrovet = $order->agrovet;
         $agrovetUser = $agrovet ? $agrovet->user : null;
         $orderUrl = route('orders.myOrders');
-    $message = 'Your order #' . $order->id . ' for <b>' . ($fertilizer ? $fertilizer->name : 'Fertilizer') . '</b> at <b>' . ($agrovet ? $agrovet->shopname : 'Agrovet') . '</b> (by ' . ($agrovetUser ? $agrovetUser->name : 'Agrovet') . ') has been <b>approved</b>. <a href="' . $orderUrl . '" style="display:inline-block;padding:4px 12px;background:#2563eb;color:#fff;border-radius:4px;text-decoration:none;font-size:0.95em;margin-left:8px;">View Orders</a>';
+    $message = 'Your order #' . $order->id . ' for <b>' . ($fertilizer ? $fertilizer->name : 'Fertilizer') . '</b> at <b>' . ($agrovet ? $agrovet->shopname : 'Agrovet') . '</b> (by ' . ($agrovetUser ? $agrovetUser->name : 'Agrovet') . ') has been <b>approved</b>. <a href="' . $orderUrl . '" class="alert-action-btn">View Orders</a>';
         Alert::create([
             'farmer_id' => $order->farmer_id,
             'message' => $message,
@@ -124,8 +124,8 @@ class OrderController extends Controller
         $agrovet = $order->agrovet;
         $agrovetUser = $agrovet ? $agrovet->user : null;
         $orderUrl = route('orders.myOrders');
-    $message = 'Your order #' . $order->order_id . ' for <b>' . ($fertilizer ? $fertilizer->name : 'Fertilizer') . '</b> at <b>' . ($agrovet ? $agrovet->shopname : 'Agrovet') . '</b> by ' . ($agrovetUser ? $agrovetUser->name : 'Agrovet') . ' has been <b>rejected</b>. <a href="' . $orderUrl . '" style="display:inline-block;padding:4px 12px;background:#2563eb;color:#fff;border-radius:4px;text-decoration:none;font-size:0.95em;margin-left:8px;">View Orders</a>';
-        Alert::create([
+    $message = 'Your order #' . $order->order_id . ' for <b>' . ($fertilizer ? $fertilizer->name : 'Fertilizer') . '</b> at <b>' . ($agrovet ? $agrovet->shopname : 'Agrovet') . '</b> by ' . ($agrovetUser ? $agrovetUser->name : 'Agrovet') . ' has been <b>rejected</b>. <a href="' . $orderUrl . '" class="alert-action-btn">View Orders</a>';
+    Alert::create([
             'farmer_id' => $order->farmer_id,
             'message' => $message,
         ]);

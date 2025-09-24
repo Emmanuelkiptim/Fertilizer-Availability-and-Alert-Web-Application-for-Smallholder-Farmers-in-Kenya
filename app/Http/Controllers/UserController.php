@@ -12,7 +12,13 @@ class UserController extends Controller
      public function Dashboard(){
           if(Auth::check() && Auth::user()->role=='farmer'){
               $farmer = Auth::user()->farmer;
-              $alerts = $farmer ? $farmer->alerts()->latest()->take(5)->get() : collect();
+              $alerts = collect();
+              if ($farmer) {
+                  $alerts = $farmer->alerts()
+                      ->where('created_at', '>=', now()->subDay())
+                      ->latest()
+                      ->get();
+              }
               return view('farmer.farmer-dashboard', compact('alerts'));
           }
           else if(Auth::check() && Auth::user()->role=='admin'){

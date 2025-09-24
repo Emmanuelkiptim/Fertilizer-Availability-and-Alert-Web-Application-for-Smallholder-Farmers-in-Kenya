@@ -10,28 +10,30 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
-                    <div class="mt-4">
-                        <h4 class="font-bold mb-2">Recent Alerts</h4>
-                        <ul class="alert-list">
-                            @forelse($alerts as $alert)
-                                <li class="alert-item @if(!$alert->is_read) alert-unread @endif">
-                                    <span class="alert-icon">@if(!$alert->is_read) 🔔 @else 📨 @endif</span>
-                                    <span class="alert-message">{!! $alert->message !!}</span>
-                                    <span class="alert-time">{{ $alert->created_at->diffForHumans() }}</span>
-                                </li>
-                            @empty
-                                <li class="alert-item">No alerts found.</li>
-                            @endforelse
-                        </ul>
-                        <div class="mt-2">
-                            <a href="{{ route('alerts.index') }}" class="btn btn-primary btn-sm">View All Alerts</a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-@section('css')
+    <div class="container py-4">
+        <h2 class="font-bold mb-3">My Alerts</h2>
+        <ul class="alert-list">
+            @forelse($alerts as $alert)
+                <li class="alert-item @if(!$alert->is_read) alert-unread @endif">
+                    <span class="alert-icon">@if(!$alert->is_read) 🔔 @else 📨 @endif</span>
+                    <span class="alert-message">{!! $alert->message !!}</span>
+                    <span class="alert-time">{{ $alert->created_at->diffForHumans() }}</span>
+                    @if(!$alert->is_read)
+                        <form action="{{ route('alerts.markAsRead', $alert->id) }}" method="POST" style="display:inline; margin-left:10px;">
+                            @csrf
+                            <button class="btn btn-sm btn-primary">Mark as read</button>
+                        </form>
+                    @endif
+                </li>
+            @empty
+                <li class="alert-item">No alerts found.</li>
+            @endforelse
+        </ul>
+    </div>
     <style>
         .alert-list {
             list-style: none;
@@ -68,5 +70,4 @@
             white-space: nowrap;
         }
     </style>
-@endsection
 </x-app-layout>
