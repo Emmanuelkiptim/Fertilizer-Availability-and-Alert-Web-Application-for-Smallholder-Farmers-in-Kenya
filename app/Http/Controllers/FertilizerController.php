@@ -58,7 +58,7 @@ class FertilizerController extends Controller
 
         $agrovetId = $this->currentAgrovetId();
 
-        Fertilizer::create([
+        $fertilizer = Fertilizer::create([
             'agrovet_id'   => $agrovetId,
             'name'         => $request->name,
             'type'         => $request->type,
@@ -67,8 +67,21 @@ class FertilizerController extends Controller
             // 'availability' => $request->availability,
         ]);
 
+        // Alert all farmers who have a favourite fertilizer of the same type
+        $favouriteFarmerIds = \App\Models\Farmer::whereHas('favourites', function($query) use ($request) {
+            $query->where('type', $request->type);
+        })->pluck('id');
+
+        $fertilizerUrl = route('farmers.fertilizers.show', $fertilizer->fertilizer_id);
+        foreach ($favouriteFarmerIds as $farmerId) {
+            \App\Models\Alert::create([
+                'farmer_id' => $farmerId,
+                'message' => 'A new fertilizer of your favourite type (<b>' . e($fertilizer->type) . '</b>) has been added: <b>' . e($fertilizer->name) . '</b>. <a href="' . $fertilizerUrl . '" class="alert-action-btn">View Fertilizer</a>',
+            ]);
+        }
+
         return redirect()->route('fertilizers.index')
-                         ->with('success', 'Fertilizer added successfully.');
+                         ->with('success', 'Fertilizer added successfully and alerts sent to interested farmers.');
     }
 
     /**

@@ -12,10 +12,12 @@
                     {{ __("You're logged in!") }}
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="container py-4">
+
+            <div class="container py-4">
         <h2 class="font-bold mb-3">My Alerts</h2>
+        <div class="mb-3">
+            <a href="{{ route('alerts.index') }}" class="alert-action-btn">Go to All Alerts</a>
+        </div>
         <ul class="alert-list">
             @forelse($alerts as $alert)
                 <li class="alert-item @if(!$alert->is_read) alert-unread @endif">
@@ -34,7 +36,30 @@
             @endforelse
         </ul>
     </div>
+        </div>
+    </div>
+    
     <style>
+        .alert-action-btn {
+            display: inline-block;
+            padding: 6px 18px;
+            background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
+            color: #fff !important;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: 600;
+            margin-left: 8px;
+            box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+            border: none;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+        }
+        .alert-action-btn:hover {
+            background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+            color: #fff !important;
+            box-shadow: 0 4px 16px rgba(30,64,175,0.15);
+            transform: translateY(-2px) scale(1.04);
+        }
         .alert-list {
             list-style: none;
             padding: 0;
