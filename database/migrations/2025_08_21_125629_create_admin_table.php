@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('admin', function (Blueprint $table) {
             $table->id(); // Primary key
-            $table->unsignedBigInteger('user_id'); // FK to systemusers
+            $table->unsignedBigInteger('user_id'); // FK to users table
             $table->timestamps();
 
-            // Foreign key to systemusers
+            // Foreign key to users
             $table->foreign('user_id')
                   ->references('id')
                   ->on('users')

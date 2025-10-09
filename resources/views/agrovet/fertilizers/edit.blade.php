@@ -36,7 +36,7 @@
                                 </optgroup>
 
                                 <optgroup label="Based on Origin">
-                                    <option value="inorganic" {{ old('type', $fertilizer->type)=='inorganic' ? 'selected' : '' }}>Inorganic Fertilizers</option>
+                                    <option value="inorganic" {{ old('type', $fertilizer->type)=='inorganic fert' ? 'selected' : '' }}>Inorganic Fertilizers</option>
                                     <option value="organic" {{ old('type', $fertilizer->type)=='organic' ? 'selected' : '' }}>Organic Fertilizers</option>
                                 </optgroup>
 
