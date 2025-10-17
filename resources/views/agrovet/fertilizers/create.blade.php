@@ -22,43 +22,35 @@
                                 class="w-full p-2 border rounded dark:bg-gray-700 dark:text-gray-100">
                                 
                                 <optgroup label="Based on Nutrient Content">
-                                    <option value="single_nutrient_nitrogen" {{ old('type')=='single_nutrient_nitrogen' ? 'selected' : '' }}>
-                                        Single-Nutrient Fertilizers / Nitrogen Fertilizers
-                                    </option>
-                                    <option value="single_nutrient_phosphorus" {{ old('type')=='single_nutrient_phosphorus' ? 'selected' : '' }}>
-                                        Single-Nutrient Fertilizers / Phosphorus Fertilizers
-                                    </option>
-                                    <option value="single_nutrient_potassium" {{ old('type')=='single_nutrient_potassium' ? 'selected' : '' }}>
-                                        Single-Nutrient Fertilizers / Potassium Fertilizers
-                                    </option>
-                                    <option value="compound_multi" {{ old('type')=='compound_multi' ? 'selected' : '' }}>
-                                        Compound / Multi-Nutrient Fertilizers
-                                    </option>
+                                    <option value="Single-Nutrient Fertilizers / Nitrogen Fertilizers" {{ old('type')=='Single-Nutrient Fertilizers / Nitrogen Fertilizers' ? 'selected' : '' }}>Single-Nutrient Fertilizers / Nitrogen Fertilizers</option>
+                                    <option value="Single-Nutrient Fertilizers / Phosphorus Fertilizers" {{ old('type')=='Single-Nutrient Fertilizers / Phosphorus Fertilizers' ? 'selected' : '' }}>Single-Nutrient Fertilizers / Phosphorus Fertilizers</option>
+                                    <option value="Single-Nutrient Fertilizers / Potassium Fertilizers" {{ old('type')=='Single-Nutrient Fertilizers / Potassium Fertilizers' ? 'selected' : '' }}>Single-Nutrient Fertilizers / Potassium Fertilizers</option>
+                                    <option value="Compound / Multi-Nutrient Fertilizers" {{ old('type')=='Compound / Multi-Nutrient Fertilizers' ? 'selected' : '' }}>Compound / Multi-Nutrient Fertilizers</option>
                                 </optgroup>
 
                                 <optgroup label="Based on Origin">
-                                    <option value="inorganic" {{ old('type')=='Inorganic_Fertilizers' ? 'selected' : '' }}>Inorganic Fertilizers</option>
-                                    <option value="organic" {{ old('type')=='Organic_Fertilizers' ? 'selected' : '' }}>Organic Fertilizers</option>
+                                    <option value="Inorganic Fertilizers" {{ old('type')=='Inorganic Fertilizers' ? 'selected' : '' }}>Inorganic Fertilizers</option>
+                                    <option value="Organic Fertilizers" {{ old('type')=='Organic Fertilizers' ? 'selected' : '' }}>Organic Fertilizers</option>
                                 </optgroup>
 
                                 <optgroup label="Based on Release Mechanism">
-                                    <option value="quick_release" {{ old('type')=='Quick_release_Fertilizers' ? 'selected' : '' }}>Quick-release Fertilizers</option>
-                                    <option value="slow_release" {{ old('type')=='Slow_release_Fertilizers' ? 'selected' : '' }}>Slow-release Fertilizers</option>
-                                    <option value="controlled_release" {{ old('type')=='Controlled_release_Fertilizers' ? 'selected' : '' }}>Controlled-release Fertilizers</option>
-                                    <option value="liquid" {{ old('type')=='Liquid_Fertilizers' ? 'selected' : '' }}>Liquid Fertilizers</option>
+                                    <option value="Quick-release Fertilizers" {{ old('type')=='Quick-release Fertilizers' ? 'selected' : '' }}>Quick-release Fertilizers</option>
+                                    <option value="Slow-release Fertilizers" {{ old('type')=='Slow-release Fertilizers' ? 'selected' : '' }}>Slow-release Fertilizers</option>
+                                    <option value="Controlled-release Fertilizers" {{ old('type')=='Controlled-release Fertilizers' ? 'selected' : '' }}>Controlled-release Fertilizers</option>
+                                    <option value="Liquid Fertilizers" {{ old('type')=='Liquid Fertilizers' ? 'selected' : '' }}>Liquid Fertilizers</option>
                                 </optgroup>
 
                                 <optgroup label="Based on Nutrient Function">
-                                    <option value="primary" {{ old('type')=='Primary_Nutrient_Fertilizers' ? 'selected' : '' }}>Primary Nutrient Fertilizers</option>
-                                    <option value="secondary" {{ old('type')=='Secondary_Nutrient_Fertilizers' ? 'selected' : '' }}>Secondary Nutrient Fertilizers</option>
-                                    <option value="micronutrient" {{ old('type')=='Micronutrient_Fertilizers' ? 'selected' : '' }}>Micronutrient Fertilizers</option>
+                                    <option value="Primary Nutrient Fertilizers" {{ old('type')=='Primary Nutrient Fertilizers' ? 'selected' : '' }}>Primary Nutrient Fertilizers</option>
+                                    <option value="Secondary Nutrient Fertilizers" {{ old('type')=='Secondary Nutrient Fertilizers' ? 'selected' : '' }}>Secondary Nutrient Fertilizers</option>
+                                    <option value="Micronutrient Fertilizers" {{ old('type')=='Micronutrient Fertilizers' ? 'selected' : '' }}>Micronutrient Fertilizers</option>
                                 </optgroup>
 
                                 <optgroup label="Specialty Fertilizers">
-                                    <option value="bio" {{ old('type')=='Biofertilizers' ? 'selected' : '' }}>Biofertilizers</option>
-                                    <option value="chelated" {{ old('type')=='Chelated_Fertilizers' ? 'selected' : '' }}>Chelated Fertilizers</option>
-                                    <option value="foliar" {{ old('type')=='Foliar_Fertilizers' ? 'selected' : '' }}>Foliar Fertilizers</option>
-                                    <option value="water_soluble" {{ old('type')=='Water_soluble_Fertilizers' ? 'selected' : '' }}>Water-soluble Fertilizers</option>
+                                    <option value="Biofertilizers" {{ old('type')=='Biofertilizers' ? 'selected' : '' }}>Biofertilizers</option>
+                                    <option value="Chelated Fertilizers" {{ old('type')=='Chelated Fertilizers' ? 'selected' : '' }}>Chelated Fertilizers</option>
+                                    <option value="Foliar Fertilizers" {{ old('type')=='Foliar Fertilizers' ? 'selected' : '' }}>Foliar Fertilizers</option>
+                                    <option value="Water-soluble Fertilizers" {{ old('type')=='Water-soluble Fertilizers' ? 'selected' : '' }}>Water-soluble Fertilizers</option>
                                 </optgroup>
 
                             </select>

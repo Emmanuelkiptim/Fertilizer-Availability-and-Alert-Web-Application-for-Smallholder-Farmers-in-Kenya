@@ -17,9 +17,9 @@
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Order ID</th>
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Farmer Name</th>
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Fertilizer</th>
+                                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Fertilizer Type</th>
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Quantity</th>
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Total Price</th>
-                                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Coordinates</th>
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Status</th>
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Actions</th>
                                 </tr>
@@ -30,9 +30,10 @@
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->order_id }}</td>
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->farmer->user->name ?? '-' }}</td>
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->fertilizer->name ?? '-' }}</td>
+                                        <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->fertilizer->type ?? '-' }}</td>
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->quantity }}</td>
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->total_price }}</td>
-                                        <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->farmer->location_latitude }}, {{ $order->farmer->location_longitude }}</td>
+                                        
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ ucfirst($order->status) }}</td>
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">
                                             @if($order->status === 'pending')
@@ -52,6 +53,25 @@
                                 @endforeach
                             </tbody>
                         </table>
+
+                    </div>
+                    <!-- Order Summary Section -->
+                    <div class="mt-8">
+                        <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Order Summary</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-green-100 dark:bg-green-900 p-4 rounded shadow">
+                                <div class="text-green-800 dark:text-green-200 font-bold">Approved Orders</div>
+                                <div class="text-2xl font-semibold mt-1">Ksh {{ number_format($approvedSum, 2) }}</div>
+                            </div>
+                            <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded shadow">
+                                <div class="text-yellow-800 dark:text-yellow-200 font-bold">Pending Orders</div>
+                                <div class="text-2xl font-semibold mt-1">Ksh {{ number_format($pendingSum, 2) }}</div>
+                            </div>
+                            <div class="bg-red-100 dark:bg-red-900 p-4 rounded shadow">
+                                <div class="text-red-800 dark:text-red-200 font-bold">Rejected Orders</div>
+                                <div class="text-2xl font-semibold mt-1">Ksh {{ number_format($rejectedSum, 2) }}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,4 +79,4 @@
     </div>
 </x-app-layout>
 
-    
+

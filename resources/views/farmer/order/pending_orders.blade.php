@@ -1,15 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Order Fertilizer') }}
+            {{ __('Pending Orders') }}
         </h2>
     </x-slot>
 
     <div class="p-6">
-        <h2>My Orders</h2>
+        <h2>Pending Orders</h2>
 
         @if($orders->isEmpty())
-            <p>No orders found.</p>
+            <p>No pending orders found.</p>
         @else
             <div class="table-responsive" style="overflow-x:auto;">
                 <table class="min-w-full table-auto">
@@ -23,7 +23,8 @@
                             <th class="px-4 py-2">Status</th>
                             <th class="px-4 py-2">Agrovet Shop</th>
                             <th class="px-4 py-2">Order Date</th>
-                            
+                            <th class="px-4 py-2">Actions</th>
+                            <th class="px-4 py-2">Call agrovet</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -37,47 +38,25 @@
                                 <td class="border px-4 py-2 text-center">{{ $order->status }}</td>
                                 <td class="border px-4 py-2 text-center">{{ $order->agrovet->shopname ?? '-' }}</td>
                                 <td class="border px-4 py-2 text-center">{{ $order->created_at }}</td>
+                                <td class="border px-4 py-2 text-center">
+                                    <form action="{{ route('orders.cancel', $order->order_id) }}" method="POST" style="display:inline-block;">
+                                        @csrf
+                                        <button type="submit" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs" onclick="return confirm('Are you sure you want to cancel this order?');">Cancel</button>
+                                    </form>
+                                </td>
+                                <td class="border px-4 py-2 text-center"><a href="tel:{{ $order->agrovet->phone }}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded text-xs">Call</a></td>
+                                
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-        @endif
-
-    @if(!$orders->isEmpty())
-    <div class="mt-8">
-        <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Order Summary</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-green-100 dark:bg-green-900 p-4 rounded shadow">
-                <div class="text-green-800 dark:text-green-200 font-bold">Approved Orders</div>
-                <div class="text-2xl font-semibold mt-1">KES {{ number_format($approvedSum, 2) }}</div>
+            <div class="mt-8">
+                <div class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded shadow">
+                    <div class="text-yellow-800 dark:text-yellow-200 font-bold">Total Pending Orders Value</div>
+                    <div class="text-2xl font-semibold mt-1">KES {{ number_format($pendingSum, 2) }}</div>
+                </div>
             </div>
-            <a href="{{ route('orders.pending') }}" class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded shadow block hover:bg-yellow-200 dark:hover:bg-yellow-800 transition">
-                <div class="text-yellow-800 dark:text-yellow-200 font-bold">Pending Orders</div>
-                <div class="text-2xl font-semibold mt-1">KES {{ number_format($pendingSum, 2) }}</div>
-                <div class="text-sm mt-2 text-yellow-700 dark:text-yellow-300 underline">View All Pending Orders</div>
-            </a>
-        </div>
+        @endif
     </div>
-    @endif
-</div>
-
-@section('css')
-    <style>
-        @media (max-width: 768px) {
-            .table-responsive {
-                overflow-x: auto;
-            }
-            table {
-                font-size: 0.9rem;
-            }
-            th, td {
-                padding: 0.3rem 0.5rem !important;
-                white-space: nowrap;
-            }
-        }
-    </style>
-@endsection
-    </div>
-
 </x-app-layout>

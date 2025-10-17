@@ -14,8 +14,9 @@ use App\Http\Controllers\FarmerController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\AgrovetController; 
 
-class OrderController extends Controller
-{
+class OrderController extends Controller{
+
+    // ...existing code...
     //
     public function create($id)
     {
@@ -55,22 +56,41 @@ class OrderController extends Controller
         return redirect()->route('orders.myOrders')->with('success', 'Order placed successfully!');
     }
     public function myOrders()
-        {
-            $farmer = Farmer::where('user_id', Auth::id())->first();
+    {
+        $farmer = Farmer::where('user_id', Auth::id())->first();
 
-            $orders = Order::where('farmer_id', $farmer->id)->with('fertilizer', 'agrovet')->get();
+        $orders = Order::where('farmer_id', $farmer->id)->with('fertilizer', 'agrovet')->get();
 
-            return view('farmer.order.my_orders', compact('orders'));
-        }
+        $approvedSum = Order::where('farmer_id', $farmer->id)->where('status', 'approved')->sum('total_price');
+        $pendingSum = Order::where('farmer_id', $farmer->id)->where('status', 'pending')->sum('total_price');
+
+        return view('farmer.order.my_orders', compact('orders', 'approvedSum', 'pendingSum'));
+    }
+
+    public function pendingOrders()
+    {
+        $farmer = Farmer::where('user_id', Auth::id())->first();
+        $orders = Order::where('farmer_id', $farmer->id)
+            ->where('status', 'pending')
+            ->with('fertilizer', 'agrovet')
+            ->get();
+        $pendingSum = $orders->sum('total_price');
+        return view('farmer.order.pending_orders', compact('orders', 'pendingSum'));
+    }
     public function agrovetOrders(){
         $agrovet = Agrovet::where('user_id', Auth::id())->first();
 
-        if(!$agrovet){
+        {
             abort(404, __('Not Authorized.'));
         }
 
         $orders = Order::where('agrovet_id', $agrovet->id)->with('fertilizer', 'farmer')->latest()->get();
-        return view('agrovet.orders.agrovet_orders', compact('orders'));
+
+        $approvedSum = Order::where('agrovet_id', $agrovet->id)->where('status', 'approved')->sum('total_price');
+        $rejectedSum = Order::where('agrovet_id', $agrovet->id)->where('status', 'rejected')->sum('total_price');
+        $pendingSum = Order::where('agrovet_id', $agrovet->id)->where('status', 'pending')->sum('total_price');
+
+        return view('agrovet.orders.agrovet_orders', compact('orders', 'approvedSum', 'rejectedSum', 'pendingSum'));
     }
     public function approveOrder($id)
     {
@@ -131,6 +151,21 @@ class OrderController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Order rejected successfully!');
+    }
+    public function cancelOrder($orderId)
+    {
+        $order = Order::where('order_id', $orderId)
+            ->where('farmer_id', Auth::user()->farmer->id)
+            ->where('status', 'pending')
+            ->firstOrFail();
+
+        $order->status = 'cancelled';
+        $order->save();
+
+        // Optionally, create an alert for the agrovet or farmer
+        // Alert::create([...]);
+
+        return redirect()->back()->with('success', 'Order cancelled successfully.');
     }
 
 }
