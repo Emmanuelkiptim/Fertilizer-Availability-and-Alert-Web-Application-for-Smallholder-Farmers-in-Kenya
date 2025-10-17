@@ -21,43 +21,35 @@
                             <label for="type" class="block text-gray-700 dark:text-gray-200 mb-2">Type</label>
                             <select name="type" id="type" required class="w-full p-2 border rounded dark:bg-gray-700 dark:text-gray-100">
                                 <optgroup label="Based on Nutrient Content">
-                                    <option value="single_nutrient_nitrogen" {{ old('type', $fertilizer->type)=='single_nutrient_nitrogen' ? 'selected' : '' }}>
-                                        Single-Nutrient Fertilizers / Nitrogen Fertilizers
-                                    </option>
-                                    <option value="single_nutrient_phosphorus" {{ old('type', $fertilizer->type)=='single_nutrient_phosphorus' ? 'selected' : '' }}>
-                                        Single-Nutrient Fertilizers / Phosphorus Fertilizers
-                                    </option>
-                                    <option value="single_nutrient_potassium" {{ old('type', $fertilizer->type)=='single_nutrient_potassium' ? 'selected' : '' }}>
-                                        Single-Nutrient Fertilizers / Potassium Fertilizers
-                                    </option>
-                                    <option value="compound_multi" {{ old('type', $fertilizer->type)=='compound_multi' ? 'selected' : '' }}>
-                                        Compound / Multi-Nutrient Fertilizers
-                                    </option>
+                                    <option value="Single-Nutrient Fertilizers / Nitrogen Fertilizers" {{ old('type', $fertilizer->type)==='Single-Nutrient Fertilizers / Nitrogen Fertilizers' ? 'selected' : '' }}>Single-Nutrient Fertilizers / Nitrogen Fertilizers</option>
+                                    <option value="Single-Nutrient Fertilizers / Phosphorus Fertilizers" {{ old('type', $fertilizer->type)==='Single-Nutrient Fertilizers / Phosphorus Fertilizers' ? 'selected' : '' }}>Single-Nutrient Fertilizers / Phosphorus Fertilizers</option>
+                                    <option value="Single-Nutrient Fertilizers / Potassium Fertilizers" {{ old('type', $fertilizer->type)==='Single-Nutrient Fertilizers / Potassium Fertilizers' ? 'selected' : '' }}>Single-Nutrient Fertilizers / Potassium Fertilizers</option>
+                                    <option value="Compound / Multi-Nutrient Fertilizers" {{ old('type', $fertilizer->type)==='Compound / Multi-Nutrient Fertilizers' ? 'selected' : '' }}>Compound / Multi-Nutrient Fertilizers</option>
                                 </optgroup>
 
                                 <optgroup label="Based on Origin">
-                                    <option value="inorganic" {{ old('type', $fertilizer->type)=='inorganic fert' ? 'selected' : '' }}>Inorganic Fertilizers</option>
-                                    <option value="organic" {{ old('type', $fertilizer->type)=='organic' ? 'selected' : '' }}>Organic Fertilizers</option>
+                                    <option value="Inorganic Fertilizers" {{ old('type', $fertilizer->type)==='Inorganic Fertilizers' ? 'selected' : '' }}>Inorganic Fertilizers</option>
+                                    <option value="Organic Fertilizers" {{ old('type', $fertilizer->type)==='Organic Fertilizers' ? 'selected' : '' }}>Organic Fertilizers</option>
                                 </optgroup>
 
                                 <optgroup label="Based on Release Mechanism">
-                                    <option value="quick_release" {{ old('type', $fertilizer->type)=='quick_release' ? 'selected' : '' }}>Quick-release Fertilizers</option>
-                                    <option value="slow_release" {{ old('type', $fertilizer->type)=='slow_release' ? 'selected' : '' }}>Slow-release Fertilizers</option>
-                                    <option value="controlled_release" {{ old('type', $fertilizer->type)=='controlled_release' ? 'selected' : '' }}>Controlled-release Fertilizers</option>
-                                    <option value="liquid" {{ old('type', $fertilizer->type)=='liquid' ? 'selected' : '' }}>Liquid Fertilizers</option>
+                                    <option value="Quick-release Fertilizers" {{ old('type', $fertilizer->type)==='Quick-release Fertilizers' ? 'selected' : '' }}>Quick-release Fertilizers</option>
+                                    <option value="Slow-release Fertilizers" {{ old('type', $fertilizer->type)==='Slow-release Fertilizers' ? 'selected' : '' }}>Slow-release Fertilizers</option>
+                                    <option value="Controlled-release Fertilizers" {{ old('type', $fertilizer->type)==='Controlled-release Fertilizers' ? 'selected' : '' }}>Controlled-release Fertilizers</option>
+                                    <option value="Liquid Fertilizers" {{ old('type', $fertilizer->type)==='Liquid Fertilizers' ? 'selected' : '' }}>Liquid Fertilizers</option>
                                 </optgroup>
 
                                 <optgroup label="Based on Nutrient Function">
-                                    <option value="primary" {{ old('type', $fertilizer->type)=='primary' ? 'selected' : '' }}>Primary Nutrient Fertilizers</option>
-                                    <option value="secondary" {{ old('type', $fertilizer->type)=='secondary' ? 'selected' : '' }}>Secondary Nutrient Fertilizers</option>
-                                    <option value="micronutrient" {{ old('type', $fertilizer->type)=='micronutrient' ? 'selected' : '' }}>Micronutrient Fertilizers</option>
+                                    <option value="Primary Nutrient Fertilizers" {{ old('type', $fertilizer->type)==='Primary Nutrient Fertilizers' ? 'selected' : '' }}>Primary Nutrient Fertilizers</option>
+                                    <option value="Secondary Nutrient Fertilizers" {{ old('type', $fertilizer->type)==='Secondary Nutrient Fertilizers' ? 'selected' : '' }}>Secondary Nutrient Fertilizers</option>
+                                    <option value="Micronutrient Fertilizers" {{ old('type', $fertilizer->type)==='Micronutrient Fertilizers' ? 'selected' : '' }}>Micronutrient Fertilizers</option>
                                 </optgroup>
 
                                 <optgroup label="Specialty Fertilizers">
-                                    <option value="bio" {{ old('type', $fertilizer->type)=='bio' ? 'selected' : '' }}>Biofertilizers</option>
-                                    <option value="chelated" {{ old('type', $fertilizer->type)=='chelated' ? 'selected' : '' }}>Chelated Fertilizers</option>
-                                    <option value="foliar" {{ old('type', $fertilizer->type)=='foliar' ? 'selected' : '' }}>Foliar Fertilizers</option>
-                                    <option value="water_soluble" {{ old('type', $fertilizer->type)=='water_soluble' ? 'selected' : '' }}>Water-soluble Fertilizers</option>
+                                    <option value="Biofertilizers" {{ old('type', $fertilizer->type)==='Biofertilizers' ? 'selected' : '' }}>Biofertilizers</option>
+                                    <option value="Chelated Fertilizers" {{ old('type', $fertilizer->type)==='Chelated Fertilizers' ? 'selected' : '' }}>Chelated Fertilizers</option>
+                                    <option value="Foliar Fertilizers" {{ old('type', $fertilizer->type)==='Foliar Fertilizers' ? 'selected' : '' }}>Foliar Fertilizers</option>
+                                    <option value="Water-soluble Fertilizers" {{ old('type', $fertilizer->type)==='Water-soluble Fertilizers' ? 'selected' : '' }}>Water-soluble Fertilizers</option>
                                 </optgroup>
                             </select>
                             @error('type') <div class="text-red-600 text-sm mt-1">{{ $message }}</div> @enderror
