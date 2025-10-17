@@ -332,7 +332,7 @@ return [
         ],
         [
             'text' => 'Orders',
-            'url' => 'admin/orders',
+            'url' => '/admin/order-reports',
             'icon' => 'fas fa-shopping-cart',
         ],
         [

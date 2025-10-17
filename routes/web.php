@@ -17,13 +17,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-   // Route::get('/profile', [FarmerController::class, 'showFarmerInfo'])->name('farmer.info');
+    // Route::get('/profile', [FarmerController::class, 'showFarmerInfo'])->name('farmer.info');
 
 });
 
-Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [UserController::class, 'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 //farmer routes
-Route::middleware(['auth','farmer'])->group(function () {
+Route::middleware(['auth', 'farmer'])->group(function () {
     // Alerts
     Route::get('/farmer/alerts', [App\Http\Controllers\AlertController::class, 'index'])->name('alerts.index');
     Route::post('/farmer/alerts/{id}/read', [App\Http\Controllers\AlertController::class, 'markAsRead'])->name('alerts.markAsRead');
@@ -45,7 +45,7 @@ Route::middleware(['auth','farmer'])->group(function () {
 
 });
 //agrovet routes
-Route::middleware(['auth','agrovet'])->group(function () {
+Route::middleware(['auth', 'agrovet'])->group(function () {
     //agrovet registration
     Route::get('/register-as-an-agrovet', [AgrovetController::class, 'create'])->name('agrovet.create');
     Route::post('/register-as-an-agrovet', [AgrovetController::class, 'store'])->name('agrovet.store');
@@ -73,19 +73,21 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/users/{id}', [AdminDashboardController::class, 'destroy'])->name('users.destroy');
     Route::post('/users/add-admin', [AdminDashboardController::class, 'addAdmin'])->name('users.addAdmin');
 
+    Route::get('/admin/order-reports', [AdminDashboardController::class, 'ordersManagement'])->name('admin.orderReports');
+
 
 });
 
-Route::get('/dashboard',[UserController::class,'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [UserController::class, 'Dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-   // Route::get('/profile', [FarmerController::class, 'showFarmerInfo'])->name('farmer.info');
+    // Route::get('/profile', [FarmerController::class, 'showFarmerInfo'])->name('farmer.info');
 
 });
 
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

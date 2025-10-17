@@ -11,20 +11,20 @@ class AdminDashboardController extends Controller
 {
     //
     public function AdminDashboard()
-{
-    if (Auth::check() && Auth::user()->role == 'admin') {
-        // Fetch statistics
+    {
+        if (Auth::check() && Auth::user()->role == 'admin') {
+            // Fetch statistics
             $usersCount = User::count();
             $farmersCount = User::where('role', 'farmer')->count();
             $agrovetsCount = User::where('role', 'agrovet')->count();
             $fertilizersCount = Fertilizer::count();
             $ordersCount = Order::count();
-        //new users registration stats daily
+            //new users registration stats daily
             $usersByDay = User::selectRaw('COUNT(id) as total, DATE(created_at) as day')
-            ->groupBy('day')
-            ->orderBy('day', 'ASC')
-            ->pluck('total', 'day');
-        // Get top 5 farmers based on engagement (orders + favorites)
+                ->groupBy('day')
+                ->orderBy('day', 'ASC')
+                ->pluck('total', 'day');
+            // Get top 5 farmers based on engagement (orders + favorites)
             $topFarmers = \DB::table('farmers')
                 ->join('users', 'farmers.user_id', '=', 'users.id') // joined with users table
                 ->leftJoin('favourites', 'favourites.farmer_id', '=', 'farmers.id')
@@ -43,11 +43,11 @@ class AdminDashboardController extends Controller
                 })
                 ->sortByDesc('engagement_score')
                 ->take(5);
-                $farmerNames = $topFarmers->pluck('name');
-                $engagementScores = $topFarmers->pluck('engagement_score');
-                $orders = $topFarmers->pluck('orders_count');
-                $favorites = $topFarmers->pluck('favorites_count');
-            $topAgrovets=\DB::table('agrovets')
+            $farmerNames = $topFarmers->pluck('name');
+            $engagementScores = $topFarmers->pluck('engagement_score');
+            $orders = $topFarmers->pluck('orders_count');
+            $favorites = $topFarmers->pluck('favorites_count');
+            $topAgrovets = \DB::table('agrovets')
                 ->join('users', 'agrovets.user_id', '=', 'users.id') // joined with users table
                 ->leftJoin('fertilizers', 'fertilizers.agrovet_id', '=', 'agrovets.id')
                 ->leftJoin('orders', 'orders.agrovet_id', '=', 'agrovets.id')
@@ -67,36 +67,78 @@ class AdminDashboardController extends Controller
                 })
                 ->sortByDesc('activity_score')
                 ->take(5);
-                $agrovetNames = $topAgrovets->pluck('name');
-                $ordersApproved = $topAgrovets->pluck('orders_approved');
-                $fertilizersListed = $topAgrovets->pluck('fertilizers_listed');
-                $favoritesCount = $topAgrovets->pluck('favorites_count');
-                $activityScores = $topAgrovets->pluck('activity_score');
-                
-        //pass data to view
-        return view('admin.dashboard', compact('usersCount', 'farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount', 'usersByDay', 'topFarmers', 'farmerNames', 'engagementScores', 'orders', 'favorites', 'agrovetNames', 'ordersApproved', 'fertilizersListed', 'favoritesCount', 'activityScores'));
-    }
-    else {
-        return redirect('/');
-    }
-}
-public function usersManagement() {
+            $agrovetNames = $topAgrovets->pluck('name');
+            $ordersApproved = $topAgrovets->pluck('orders_approved');
+            $fertilizersListed = $topAgrovets->pluck('fertilizers_listed');
+            $favoritesCount = $topAgrovets->pluck('favorites_count');
+            $activityScores = $topAgrovets->pluck('activity_score');
 
-    $allUsers = \App\Models\User::all();
-    $farmers = \App\Models\User::where('role', 'farmer')->get();
-    $agrovets = \App\Models\User::where('role', 'agrovet')->get();
-    $admins = \App\Models\User::where('role', 'admin')->get();
-    return view('admin.users-management', compact('allUsers', 'farmers', 'agrovets', 'admins'));
+            //pass data to view
+            return view('admin.dashboard', compact('usersCount', 'farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount', 'usersByDay', 'topFarmers', 'farmerNames', 'engagementScores', 'orders', 'favorites', 'agrovetNames', 'ordersApproved', 'fertilizersListed', 'favoritesCount', 'activityScores'));
+        } else {
+            return redirect('/');
+        }
+    }
 
-}
-// Delete a user
-    public function destroy($id) {
+    public function ordersManagement()
+    {
+        // Order Summary Report (by day)
+        $orderSummary = Order::select(
+            DB::raw('DATE(created_at) as day'),
+            DB::raw('SUM(status = "Pending") as pending'),
+            DB::raw('SUM(status = "Approved") as completed'),
+            DB::raw('SUM(status = "Rejected") as cancelled')
+        )
+            ->groupBy('day')
+            ->orderBy('day', 'asc')
+            ->get();
+
+        // Pending Orders
+        $pendingOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
+            ->where('status', 'Pending')->get();
+
+        // Completed Orders
+        $completedOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
+            ->where('status', 'Approved')->get();
+
+        // Cancelled Orders
+        $cancelledOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
+            ->where('status', 'Rejected')->get();
+
+        // Orders by Fertilizer Type
+        $orderByFertilizer = Order::select('fertilizer_id', DB::raw('COUNT(*) as total_orders'))
+            ->groupBy('fertilizer_id')
+            ->with('fertilizer')
+            ->get();
+
+        return view('admin.order-reports', compact(
+            'orderSummary',
+            'pendingOrders',
+            'completedOrders',
+            'cancelledOrders',
+            'orderByFertilizer'
+        ));
+    }
+    public function usersManagement()
+    {
+
+        $allUsers = \App\Models\User::all();
+        $farmers = \App\Models\User::where('role', 'farmer')->get();
+        $agrovets = \App\Models\User::where('role', 'agrovet')->get();
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        return view('admin.users-management', compact('allUsers', 'farmers', 'agrovets', 'admins'));
+
+    }
+    // Delete a user
+    public function destroy($id)
+    {
         $user = \App\Models\User::findOrFail($id);
         $user->delete();
         return redirect()->route('users.management')->with('success', 'User deleted successfully.');
     }
     // Add a new admin
-    public function addAdmin(Request $request) {
+    public function addAdmin(Request $request)
+    {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
