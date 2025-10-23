@@ -14,6 +14,7 @@ class AdminDashboardController extends Controller
     {
         if (Auth::check() && Auth::user()->role == 'admin') {
             // Fetch statistics
+            $adminCount = User::where('role', 'admin')->count();
             $usersCount = User::count();
             $farmersCount = User::where('role', 'farmer')->count();
             $agrovetsCount = User::where('role', 'agrovet')->count();
@@ -74,7 +75,7 @@ class AdminDashboardController extends Controller
             $activityScores = $topAgrovets->pluck('activity_score');
 
             //pass data to view
-            return view('admin.dashboard', compact('usersCount', 'farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount', 'usersByDay', 'topFarmers', 'farmerNames', 'engagementScores', 'orders', 'favorites', 'agrovetNames', 'ordersApproved', 'fertilizersListed', 'favoritesCount', 'activityScores'));
+            return view('admin.dashboard', compact('adminCount','usersCount', 'farmersCount', 'agrovetsCount', 'fertilizersCount', 'ordersCount', 'usersByDay', 'topFarmers', 'farmerNames', 'engagementScores', 'orders', 'favorites', 'agrovetNames', 'ordersApproved', 'fertilizersListed', 'favoritesCount', 'activityScores'));
         } else {
             return redirect('/');
         }
@@ -87,7 +88,7 @@ class AdminDashboardController extends Controller
             DB::raw('DATE(created_at) as day'),
             DB::raw('SUM(status = "Pending") as pending'),
             DB::raw('SUM(status = "Approved") as completed'),
-            DB::raw('SUM(status = "Rejected") as cancelled')
+            DB::raw('SUM(status = "Cancelled") as cancelled')
         )
             ->groupBy('day')
             ->orderBy('day', 'asc')
@@ -103,7 +104,7 @@ class AdminDashboardController extends Controller
 
         // Cancelled Orders
         $cancelledOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
-            ->where('status', 'Rejected')->get();
+            ->where('status', 'Cancelled')->get();
 
         // Orders by Fertilizer Type
         $orderByFertilizer = Order::select('fertilizer_id', DB::raw('COUNT(*) as total_orders'))
@@ -151,5 +152,63 @@ class AdminDashboardController extends Controller
         $admin->role = 'admin';
         $admin->save();
         return redirect()->route('users.management')->with('success', 'Admin registered successfully.');
+    }
+    public function fertilizerindex()
+    {
+        // Fertilizer Stock Summary
+        $fertilizerStocks = Fertilizer::with('agrovet')
+            ->orderBy('name')
+            ->get();
+
+        // For Bar Chart: Fertilizer Type vs Available Quantity
+        $typeGroups = Fertilizer::select('type')
+            ->groupBy('type')
+            ->pluck('type');
+        $fertilizerTypes = $typeGroups->toArray();
+        $fertilizerQuantities = [];
+        foreach ($fertilizerTypes as $type) {
+            $fertilizerQuantities[] = Fertilizer::where('type', $type)->sum('qty');
+        }
+
+        // Fertilizer Purchase Trends
+        // Most purchased fertilizers by season, crop, location
+        $mostPurchased = Order::selectRaw('fertilizer_id, SUM(quantity) as total')
+            ->groupBy('fertilizer_id')
+            ->orderByDesc('total')
+            ->with('fertilizer')
+            ->limit(10)
+            ->get();
+
+        // Top-selling agrovets
+        $topAgrovets = Order::selectRaw('agrovet_id, SUM(quantity) as total')
+            ->groupBy('agrovet_id')
+            ->orderByDesc('total')
+            ->with('agrovet')
+            ->limit(5)
+            ->get();
+
+        // Peak buying periods (by month)
+        $ordersByMonth = Order::selectRaw('MONTH(created_at) as month, SUM(quantity) as total')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+        $months = $ordersByMonth->pluck('month')->map(function($m){ return Carbon::create()->month($m)->format('F'); })->toArray();
+        $ordersPerMonth = $ordersByMonth->pluck('total')->toArray();
+
+        // For crops and location, you may need to join with related tables if available
+        // Example: $ordersByCrop = ...
+        // Example: $ordersByLocation = ...
+
+        return view('admin.fertilizerreport', [
+            'fertilizerStocks' => $fertilizerStocks,
+            'fertilizerTypes' => $fertilizerTypes,
+            'fertilizerQuantities' => $fertilizerQuantities,
+            'mostPurchased' => $mostPurchased,
+            'topAgrovets' => $topAgrovets,
+            'months' => $months,
+            'ordersPerMonth' => $ordersPerMonth,
+            // 'ordersByCrop' => $ordersByCrop,
+            // 'ordersByLocation' => $ordersByLocation,
+        ]);
     }
 }

@@ -9,11 +9,14 @@ use App\Http\Controllers\FertilizerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\FertilizerReportController;
 Route::get('/', function () {
     return view('auth.register');
 });
 //DETAILS
 Route::middleware('auth')->group(function () {
+    // Admin fertilizer report
+    Route::get('/admin/fertilizer-report', [FertilizerReportController::class, 'index'])->name('admin.fertilizerreport');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -75,8 +78,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/users', [AdminDashboardController::class, 'usersManagement'])->name('users.management');
     Route::delete('/users/{id}', [AdminDashboardController::class, 'destroy'])->name('users.destroy');
     Route::post('/users/add-admin', [AdminDashboardController::class, 'addAdmin'])->name('users.addAdmin');
-
+    //order-reports
     Route::get('/admin/order-reports', [AdminDashboardController::class, 'ordersManagement'])->name('admin.orderReports');
+    //fertilizer reports
+    Route::get('/admin/fertilizers', [AdminDashboardController::class, 'fertilizerindex'])->name('admin.fertilizerreport');
 
 
 });

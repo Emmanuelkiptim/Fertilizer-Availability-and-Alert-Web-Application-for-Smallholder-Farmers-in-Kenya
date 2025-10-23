@@ -18,12 +18,21 @@
         </div>
     </div>
     <div class="col-lg-2 col-6">
-        <div class="small-box bg-success">
+        <div class="small-box bg-danger" style="background-color: #ffa889ff; color: #fff;">
+            <div class="inner">
+                <h3>{{ $adminCount}}</h3>
+                <p>Total Admins</p>
+            </div>
+            <div class="icon"><i class="fas fa-user-shield"></i></div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-6">
+        <div class="small-box bg-success" style="background-color: #28a745; color: #fff;">
             <div class="inner">
                 <h3>{{ $farmersCount }}</h3>
                 <p>Total Farmers</p>
             </div>
-            <div class="icon"><i class="fas fa-user"></i></div>
+            <div class="icon"><i class="fas fa-users" ></i></div>
         </div>
     </div>
 
@@ -47,7 +56,7 @@
         </div>
     </div>
 
-    <div class="col-lg-4 col-6">
+    <div class="col-lg-2 col-6">
         <div class="small-box bg-danger">
             <div class="inner">
                 <h3>{{ $ordersCount }}</h3>
@@ -56,6 +65,8 @@
             <div class="icon"><i class="fas fa-shopping-cart"></i></div>
         </div>
     </div>
+    
+    
 </div>
 <canvas id="userGrowthChart" height="100"></canvas>
 

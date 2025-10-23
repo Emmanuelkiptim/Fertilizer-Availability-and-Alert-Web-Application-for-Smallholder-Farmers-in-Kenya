@@ -163,7 +163,7 @@
             datasets: [
                 { label: 'Pending', data: @json($orderSummary->pluck('pending')), backgroundColor: 'yellow' },
                 { label: 'Approved', data: @json($orderSummary->pluck('completed')), backgroundColor: 'green' },
-                { label: 'Rejected', data: @json($orderSummary->pluck('cancelled')), backgroundColor: 'red' }
+                { label: 'Cancelled', data: @json($orderSummary->pluck('cancelled')), backgroundColor: 'red' }
             ]
         },
         options: {

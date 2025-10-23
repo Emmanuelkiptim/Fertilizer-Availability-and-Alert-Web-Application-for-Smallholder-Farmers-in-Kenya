@@ -327,7 +327,7 @@ return [
         ],
         [
             'text' => 'Fertilizers',
-            'url' => 'admin/fertilizers',
+            'url' => '/admin/fertilizers',
             'icon' => 'fas fa-leaf',
         ],
         [
