@@ -7,6 +7,7 @@ use App\Models\Fertilizer;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Models\AdminLoginHistory;
 class AdminDashboardController extends Controller
 {
     //
@@ -112,12 +113,21 @@ class AdminDashboardController extends Controller
             ->with('fertilizer')
             ->get();
 
+        // Total Revenue from completed orders
+        $totalCompletedRevenue = Order::where('status', 'Approved')->sum('total_price');
+        $totalCancelledRevenue = Order::where('status', 'Cancelled')->sum('total_price');
+        $totalPendingRevenue = Order::where('status', 'Pending')->sum('total_price');
+
         return view('admin.order-reports', compact(
             'orderSummary',
             'pendingOrders',
             'completedOrders',
             'cancelledOrders',
-            'orderByFertilizer'
+            'orderByFertilizer',
+            'totalCompletedRevenue',
+            'totalCancelledRevenue',
+            'totalPendingRevenue'
+
         ));
     }
     public function usersManagement()
@@ -211,4 +221,33 @@ class AdminDashboardController extends Controller
             // 'ordersByLocation' => $ordersByLocation,
         ]);
     }
+    public function reportsAnalytics()
+    {
+        // This method can be expanded to include various reports and analytics
+        // For now, it simply returns a view
+        return view('admin.reportandanalytics');
+    }
+    public function accountSettings()
+    {
+        $user = Auth::user();
+        // Login history
+        $loginHistory = AdminLoginHistory::where('user_id', $user->id)
+            ->orderByDesc('logged_in_at')
+            ->limit(20)
+            ->get();
+
+        // Active sessions (from database sessions table)
+        $sessions = DB::table('sessions')
+            ->where('user_id', $user->id)
+            ->orderByDesc('last_activity')
+            ->get();
+            
+        return view('admin.account-settings', compact('loginHistory', 'sessions'));
+    }
+    public function terminateSession($sessionId)
+    {
+        DB::table('sessions')->where('id', $sessionId)->delete();
+        return redirect()->back()->with('success', 'Session terminated successfully.');
+    }
+
 }

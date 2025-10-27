@@ -10,6 +10,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FavouriteController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\FertilizerReportController;
+use App\Http\Controllers\Admin\AccountSettingsController;
 Route::get('/', function () {
     return view('auth.register');
 });
@@ -82,6 +83,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/order-reports', [AdminDashboardController::class, 'ordersManagement'])->name('admin.orderReports');
     //fertilizer reports
     Route::get('/admin/fertilizers', [AdminDashboardController::class, 'fertilizerindex'])->name('admin.fertilizerreport');
+    //reports and analytics
+    Route::get('/admin/reports', [AdminDashboardController::class, 'reportsAnalytics'])->name('admin.reportsAnalytics');
+    //account settings
+    Route::get('/admin/settings', [AdminDashboardController::class, 'accountSettings'])->name('admin.accountSettings');
+    // Admin login management
+    Route::get('/admin/account-settings', [AccountSettingsController::class, 'loginManagement'])->name('admin.accountSettings');
+    Route::post('/admin/terminate-session/{sessionId}', [AccountSettingsController::class, 'terminateSession'])->name('admin.terminateSession');
+    
 
 
 });

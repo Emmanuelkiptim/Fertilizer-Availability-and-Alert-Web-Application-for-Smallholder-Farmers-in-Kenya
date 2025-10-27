@@ -15,6 +15,43 @@
 
 @section('content')
 
+<!-- TOTAL REVENUE CARD -->
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h3 class="card-title">Completed Revenue</h3>
+            </div>
+            <div class="card-body">
+                <h2 style="font-weight:bold; color:#256029;">Ksh {{ number_format($totalCompletedRevenue, 2) }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-danger text-white">
+                <h3 class="card-title">Cancelled Revenue</h3>
+            </div>
+            <div class="card-body">
+                <h2 style="font-weight:bold; color:#a94442;">Ksh {{ number_format($totalCancelledRevenue, 2) }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-warning text-dark">
+                <h3 class="card-title">Pending Revenue</h3>
+            </div>
+            <div class="card-body">
+                <h2 style="font-weight:bold; color:#856404;">Ksh {{ number_format($totalPendingRevenue, 2) }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <!-- ORDER SUMMARY CHART -->
 <div class="card">
     <div class="card-header">
