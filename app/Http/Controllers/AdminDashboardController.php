@@ -221,11 +221,11 @@ class AdminDashboardController extends Controller
             // 'ordersByLocation' => $ordersByLocation,
         ]);
     }
-    public function reportsAnalytics()
+    public function mapoverview()
     {
         // This method can be expanded to include various reports and analytics
         // For now, it simply returns a view
-        return view('admin.reportandanalytics');
+        return view('admin.mapoverview');
     }
     public function accountSettings()
     {

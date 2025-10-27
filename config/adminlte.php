@@ -336,9 +336,9 @@ return [
             'icon' => 'fas fa-shopping-cart',
         ],
         [
-            'text' => 'Reports & Analytics',
-            'url' => 'admin/reports',
-            'icon' => 'fas fa-chart-bar',
+            'text' => 'Map Over View',
+            'url' => 'admin/map-overview',
+            'icon' => 'fas fa-map',
         ],
         [
             'text' => 'Account Settings',
