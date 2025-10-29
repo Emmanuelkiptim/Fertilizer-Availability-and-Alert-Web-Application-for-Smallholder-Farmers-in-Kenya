@@ -50,6 +50,12 @@ Route::middleware(['auth', 'farmer'])->group(function () {
     Route::post('/favourites/{fertilizer}/toggle', [FavouriteController::class, 'toggle'])->name('favourites.toggle');
     Route::get('/favourites', [FavouriteController::class, 'index'])->name('favourites.index');
 
+    // Stripe payment routes
+    Route::get('/orders/{orderId}/pay', [OrderController::class, 'createStripeSession'])->name('orders.pay');
+    Route::get('/orders/payment-success/{orderId}', function($orderId) {
+        return redirect()->route('orders.myOrders')->with('success', 'Payment successful!');
+    })->name('orders.paymentSuccess');
+
 
 });
 //agrovet routes
@@ -59,6 +65,8 @@ Route::middleware(['auth', 'agrovet'])->group(function () {
     Route::post('/register-as-an-agrovet', [AgrovetController::class, 'store'])->name('agrovet.store');
     Route::post('/agrovet/profile/update', [AgrovetController::class, 'update'])->name('agrovet.update');
     //Fertilizer
+// Stripe webhook route (no auth middleware)
+Route::post('/stripe/webhook', [OrderController::class, 'stripeWebhook']);
     Route::get('agrovet/fertilizers', [FertilizerController::class, 'index'])->name('fertilizers.index');
     Route::get('agrovet/fertilizers/create', [FertilizerController::class, 'create'])->name('fertilizers.create');
     Route::post('agrovet/fertilizers', [FertilizerController::class, 'store'])->name('fertilizers.store');

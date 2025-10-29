@@ -13,8 +13,71 @@ use App\Http\Controllers\FertilizerController;
 use App\Http\Controllers\FarmerController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\AgrovetController; 
+use Stripe\Stripe;
+use Stripe\Checkout\Session as StripeSession;
 
 class OrderController extends Controller{
+    // Stripe: Create Checkout session for an order
+    public function createStripeSession($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+        if ($order->payment_status === 'paid') {
+            return redirect()->back()->with('error', 'Order already paid.');
+        }
+
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $session = StripeSession::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'kes',
+                    'product_data' => [
+                        'name' => 'Order #' . $order->order_id,
+                        'description' => 'Fertilizer order',
+                    ],
+                    'unit_amount' => (int)($order->total_price * 100),
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => route('orders.paymentSuccess', ['orderId' => $order->order_id]),
+            'cancel_url' => route('orders.myOrders'),
+        ]);
+
+        $order->stripe_session_id = $session->id;
+        $order->payment_status = 'pending';
+        $order->save();
+
+        return redirect($session->url);
+    }
+
+    // Stripe: Webhook to handle payment confirmation
+    public function stripeWebhook(Request $request)
+    {
+        $payload = $request->getContent();
+        $sig_header = $request->server('HTTP_STRIPE_SIGNATURE');
+        $endpoint_secret = config('services.stripe.webhook_secret');
+
+        try {
+            $event = \Stripe\Webhook::constructEvent(
+                $payload, $sig_header, $endpoint_secret
+            );
+        } catch(\Exception $e) {
+            return response('Webhook Error: ' . $e->getMessage(), 400);
+        }
+
+        if ($event->type === 'checkout.session.completed') {
+            $session = $event->data->object;
+            $order = Order::where('stripe_session_id', $session->id)->first();
+            if ($order) {
+                $order->payment_status = 'paid';
+                $order->save();
+            }
+        }
+
+        return response('Webhook handled', 200);
+    }
 
     // ...existing code...
     //
@@ -80,10 +143,7 @@ class OrderController extends Controller{
     public function agrovetOrders(){
         $agrovet = Agrovet::where('user_id', Auth::id())->first();
 
-        {
-            abort(404, __('Not Authorized.'));
-        }
-
+        
         $orders = Order::where('agrovet_id', $agrovet->id)->with('fertilizer', 'farmer')->latest()->get();
 
         $approvedSum = Order::where('agrovet_id', $agrovet->id)->where('status', 'approved')->sum('total_price');
@@ -108,7 +168,7 @@ class OrderController extends Controller{
         $agrovet = $order->agrovet;
         $agrovetUser = $agrovet ? $agrovet->user : null;
         $orderUrl = route('orders.myOrders');
-    $message = 'Your order #' . $order->id . ' for <b>' . ($fertilizer ? $fertilizer->name : 'Fertilizer') . '</b> at <b>' . ($agrovet ? $agrovet->shopname : 'Agrovet') . '</b> (by ' . ($agrovetUser ? $agrovetUser->name : 'Agrovet') . ') has been <b>approved</b>. <a href="' . $orderUrl . '" class="alert-action-btn">View Orders</a>';
+    $message = 'Your order #' . $order->order_id . ' for <b>' . ($fertilizer ? $fertilizer->name : 'Fertilizer') . '</b> at <b>' . ($agrovet ? $agrovet->shopname : 'Agrovet') . '</b> (by ' . ($agrovetUser ? $agrovetUser->name : 'Agrovet') . ') has been <b>approved</b>. <a href="' . $orderUrl . '" class="alert-action-btn">View Orders</a>';
         Alert::create([
             'farmer_id' => $order->farmer_id,
             'message' => $message,

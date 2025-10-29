@@ -37,6 +37,17 @@
                                 <td class="border px-4 py-2 text-center">{{ $order->status }}</td>
                                 <td class="border px-4 py-2 text-center">{{ $order->agrovet->shopname ?? '-' }}</td>
                                 <td class="border px-4 py-2 text-center">{{ $order->created_at }}</td>
+                                <td class="border px-4 py-2 text-center">
+                                    @if($order->status == 'approved' && $order->payment_status == 'not paid')
+                                        <a href="{{ route('orders.pay', $order->order_id) }}" class="btn btn-primary">Pay</a>
+                                    @elseif($order->payment_status == 'pending')
+                                        <span class="text-warning">Payment Pending</span>
+                                    @elseif($order->payment_status == 'paid')
+                                        <span class="text-success">Paid</span>
+                                    @else
+                                        <span class="text-muted">Not Paid</span>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

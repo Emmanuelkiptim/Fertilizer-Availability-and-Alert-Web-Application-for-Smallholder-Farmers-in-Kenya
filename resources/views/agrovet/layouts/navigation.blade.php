@@ -19,7 +19,7 @@
                         {{ __('Fertilizers') }}
                     </x-nav-link>
                     <x-nav-link :href="route('agrovet.orders')" :active="request()->routeIs('agrovet.orders')">
-                        {{ __('Orders') }}
+                        {{ __('Orders Placed') }}
                     </x-nav-link>
                 </div>
             </div>

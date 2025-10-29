@@ -21,6 +21,7 @@
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Quantity</th>
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Total Price</th>
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Status</th>
+                                    <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Payment Status</th>
                                     <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-normal">Actions</th>
                                 </tr>
                             </thead>
@@ -33,8 +34,16 @@
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->fertilizer->type ?? '-' }}</td>
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->quantity }}</td>
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ $order->total_price }}</td>
-                                        
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">{{ ucfirst($order->status) }}</td>
+                                        <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">
+                                            @if($order->payment_status == 'paid')
+                                                <span class="text-success">Paid</span>
+                                            @elseif($order->payment_status == 'pending')
+                                                <span class="text-warning">Payment Pending</span>
+                                            @else
+                                                <span class="text-muted">Not Paid</span>
+                                            @endif
+                                        </td>
                                         <td class="px-3 py-4 whitespace-normal text-sm text-gray-900">
                                             @if($order->status === 'pending')
                                                 <form action="{{ route('orders.approve', $order->order_id) }}" method="POST" class="inline">
