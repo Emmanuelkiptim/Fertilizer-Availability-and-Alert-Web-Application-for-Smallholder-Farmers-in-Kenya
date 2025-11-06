@@ -59,10 +59,11 @@
     <div class="mt-8">
         <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Order Summary</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-green-100 dark:bg-green-900 p-4 rounded shadow">
+            <a href="{{ route('orders.approved') }}" class="bg-green-100 dark:bg-green-900 p-4 rounded shadow block hover:bg-green-200 dark:hover:bg-green-800 transition">
                 <div class="text-green-800 dark:text-green-200 font-bold">Approved Orders</div>
                 <div class="text-2xl font-semibold mt-1">KES {{ number_format($approvedSum, 2) }}</div>
-            </div>
+                <div class="text-sm mt-2 text-green-700 dark:text-green-300 underline">View All Approved Orders</div>
+            </a>
             <a href="{{ route('orders.pending') }}" class="bg-yellow-100 dark:bg-yellow-900 p-4 rounded shadow block hover:bg-yellow-200 dark:hover:bg-yellow-800 transition">
                 <div class="text-yellow-800 dark:text-yellow-200 font-bold">Pending Orders</div>
                 <div class="text-2xl font-semibold mt-1">KES {{ number_format($pendingSum, 2) }}</div>

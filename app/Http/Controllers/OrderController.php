@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -11,12 +10,29 @@ use App\Models\Agrovet;
 use App\Models\Alert;
 use App\Http\Controllers\FertilizerController;
 use App\Http\Controllers\FarmerController;
+
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\AgrovetController; 
-use Stripe\Stripe;
-use Stripe\Checkout\Session as StripeSession;
 
 class OrderController extends Controller{
+    // ...existing code...
+
+    public function approvedOrders()
+    {
+        $farmer = Farmer::where('user_id', Auth::id())->first();
+        $ordersPaginated = Order::where('farmer_id', $farmer->id)
+            ->where('status', 'approved')
+            ->with('fertilizer', 'agrovet')
+            ->paginate(5);
+        $allOrders = Order::where('farmer_id', $farmer->id)
+            ->where('status', 'approved')
+            ->with('fertilizer', 'agrovet')
+            ->get();
+        return view('farmer.order.approved_orders', [
+            'orders' => $ordersPaginated,
+            'allOrders' => $allOrders
+        ]);
+    }
+
     // Stripe: Create Checkout session for an order
     public function createStripeSession($orderId)
     {

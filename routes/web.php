@@ -44,6 +44,7 @@ Route::middleware(['auth', 'farmer'])->group(function () {
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.myOrders');
     Route::get('/my-orders/pending', [OrderController::class, 'pendingOrders'])->name('orders.pending');
+    Route::get('/my-orders/approved', [OrderController::class, 'approvedOrders'])->name('orders.approved');
     //cancel pending order
     Route::post('/orders/{order}/cancel', [OrderController::class, 'cancelOrder'])->name('orders.cancel');
     //faevourite fertilizer
