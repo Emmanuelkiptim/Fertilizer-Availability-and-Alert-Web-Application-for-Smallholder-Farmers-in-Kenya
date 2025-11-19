@@ -14,7 +14,16 @@
     <div class="card-body p-0">
         <div class="w-100" style="min-height:300px;">
             <div id="map" style="height: 400px; width: 100%; min-width: 200px;"></div>
-        </div>
+            </div>
+            <div class="mt-3 mb-2 d-flex justify-content-center" style="width:100%;">
+                <strong class="mr-3">Key:</strong>
+                <div class="d-flex align-items-center mr-4">
+                    <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png" alt="Green Pin" style="width:20px;height:32px;margin-right:8px;"> Farmer
+                </div>
+                <div class="d-flex align-items-center">
+                    <img src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png" alt="Red Pin" style="width:20px;height:32px;margin-right:8px;"> Agrovet
+                </div>
+            </div>
     </div>
 </div>
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>

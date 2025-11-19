@@ -88,20 +88,15 @@
                         // Coordinates from DB
                         let farmer = [{{ Auth::user()->farmer->location_longitude }}, {{ Auth::user()->farmer->location_latitude }}];   // lng, lat
                         let agrovet = [{{ $fertilizer->agrovet->location_longitude }}, {{ $fertilizer->agrovet->location_latitude }}]; // lng, lat
-
                         let map = L.map('map');
-
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             attribution: '&copy; OpenStreetMap contributors',
                             subdomains: ['a','b','c']
                         }).addTo(map);
-
                         let farmerCoords = [{{ Auth::user()->farmer->location_latitude }}, {{ Auth::user()->farmer->location_longitude }}];
                         let agrovetCoords = [{{ $fertilizer->agrovet->location_latitude }}, {{ $fertilizer->agrovet->location_longitude }}];
-
                         // Auto-fit map so both are visible
                         map.fitBounds([farmerCoords, agrovetCoords]);
-
                         // OSM tiles
                         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -131,7 +126,7 @@
                             let res = await fetch("https://api.openrouteservice.org/v2/directions/driving-car", {
                                 method: "POST",
                                 headers: {
-                                    "Authorization": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjM1MjljMDRmOGQ4OTQwYTM5M2IxMzk2NzBjOTQyMzc0IiwiaCI6Im11cm11cjY0In0=", // Replace with your key
+                                    "Authorization": "{{ env('OPENSTREETMAP_API_KEY') }}", // Replace with your key
                                     "Content-Type": "application/json"
                                 },
                                 body: JSON.stringify({

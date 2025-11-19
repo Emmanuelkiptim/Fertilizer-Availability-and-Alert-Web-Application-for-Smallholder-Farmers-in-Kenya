@@ -8,6 +8,7 @@ use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\AdminLoginHistory;
+
 class AdminDashboardController extends Controller
 {
     //
@@ -89,7 +90,8 @@ class AdminDashboardController extends Controller
             DB::raw('DATE(created_at) as day'),
             DB::raw('SUM(status = "Pending") as pending'),
             DB::raw('SUM(status = "Approved") as completed'),
-            DB::raw('SUM(status = "Cancelled") as cancelled')
+            DB::raw('SUM(status = "Cancelled") as cancelled'),
+            DB::raw('SUM(status = "Rejected") as rejected')
         )
             ->groupBy('day')
             ->orderBy('day', 'asc')
@@ -107,27 +109,41 @@ class AdminDashboardController extends Controller
         $cancelledOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
             ->where('status', 'Cancelled')->get();
 
-        // Orders by Fertilizer Type
-        $orderByFertilizer = Order::select('fertilizer_id', DB::raw('COUNT(*) as total_orders'))
-            ->groupBy('fertilizer_id')
-            ->with('fertilizer')
-            ->get();
+        // Rejected Orders
+        $rejectedOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
+            ->where('status', 'Rejected')->get();
 
-        // Total Revenue from completed orders
-        $totalCompletedRevenue = Order::where('status', 'Approved')->sum('total_price');
-        $totalCancelledRevenue = Order::where('status', 'Cancelled')->sum('total_price');
-        $totalPendingRevenue = Order::where('status', 'Pending')->sum('total_price');
+        // Orders by Fertilizer Type (grouped by type)
+        $orderByFertilizerType = Order::select('fertilizer_id', DB::raw('SUM(quantity) as total_orders'))
+            ->with('fertilizer')
+            ->groupBy('fertilizer_id')
+            ->get()
+            ->groupBy(fn($order) => $order->fertilizer->type)
+            ->map(function($orders, $type) {
+                return [
+                    'type' => $type,
+                    'total_orders' => $orders->sum('total_orders')
+                ];
+            })
+            ->values();
+
+    // Total Revenue from completed orders
+    $totalCompletedRevenue = Order::where('status', 'Approved')->sum('total_price');
+    $totalCancelledRevenue = Order::where('status', 'Cancelled')->sum('total_price');
+    $totalPendingRevenue = Order::where('status', 'Pending')->sum('total_price');
+    $totalRejectedRevenue = Order::where('status', 'Rejected')->sum('total_price');
 
         return view('admin.order-reports', compact(
             'orderSummary',
             'pendingOrders',
             'completedOrders',
             'cancelledOrders',
-            'orderByFertilizer',
+            'rejectedOrders',
+            'orderByFertilizerType',
             'totalCompletedRevenue',
             'totalCancelledRevenue',
-            'totalPendingRevenue'
-
+            'totalPendingRevenue',
+            'totalRejectedRevenue'
         ));
     }
     public function usersManagement()
@@ -165,15 +181,13 @@ class AdminDashboardController extends Controller
     }
     public function fertilizerindex()
     {
-        // Fertilizer Stock Summary
+        // Fertilizer Stock Summary (paginated)
         $fertilizerStocks = Fertilizer::with('agrovet')
             ->orderBy('name')
-            ->get();
+            ->paginate(20);
 
         // For Bar Chart: Fertilizer Type vs Available Quantity
-        $typeGroups = Fertilizer::select('type')
-            ->groupBy('type')
-            ->pluck('type');
+        $typeGroups = Fertilizer::select('type')->distinct()->pluck('type');
         $fertilizerTypes = $typeGroups->toArray();
         $fertilizerQuantities = [];
         foreach ($fertilizerTypes as $type) {

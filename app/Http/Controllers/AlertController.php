@@ -7,7 +7,8 @@ use App\Models\Alert;
 use Illuminate\Support\Facades\Auth;
 
 class AlertController extends Controller
-{
+{   
+
     // Show alerts for the logged-in farmer
     public function index()
     {

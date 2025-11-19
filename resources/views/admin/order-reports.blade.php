@@ -1,3 +1,4 @@
+
 @extends('adminlte::page')
 
 @section('title', 'Order Reports')
@@ -34,7 +35,7 @@
                 <h3 class="card-title">Cancelled Revenue</h3>
             </div>
             <div class="card-body">
-                <h2 style="font-weight:bold; color:#a94442;">Ksh {{ number_format($totalCancelledRevenue, 2) }}</h2>
+                <h2 style="font-weight:bold; color:#a94442;">Ksh {{ number_format($totalRejectedRevenue, 2) }}</h2>
             </div>
         </div>
     </div>
@@ -149,9 +150,10 @@
 </div>
 
 <!-- CANCELLED ORDERS TABLE -->
+<!-- REJECTED ORDERS TABLE -->
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Cancelled Orders</h3>
+        <h3 class="card-title">Rejected Orders</h3>
     </div>
     <div class="card-body table-responsive">
         <table class="table table-bordered table-hover">
@@ -164,11 +166,11 @@
                     <th>Quantity</th>
                     <th>Total Price</th>
                     <th>Status</th>
-                    <th>Cancelled Date</th>
+                    <th>Rejected Date</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($cancelledOrders as $order)
+                @foreach($rejectedOrders as $order)
                     <tr>
                         <td>{{ $order->order_id }}</td>
                         <td>{{ $order->farmer->user ? $order->farmer->user->name : $order->farmer->name }}</td>
@@ -184,7 +186,6 @@
         </table>
     </div>
 </div>
-
 @stop
 
 @section('js')
@@ -200,7 +201,7 @@
             datasets: [
                 { label: 'Pending', data: @json($orderSummary->pluck('pending')), backgroundColor: 'yellow' },
                 { label: 'Approved', data: @json($orderSummary->pluck('completed')), backgroundColor: 'green' },
-                { label: 'Cancelled', data: @json($orderSummary->pluck('cancelled')), backgroundColor: 'red' }
+                { label: 'Rejected', data: @json($orderSummary->pluck('rejected')), backgroundColor: 'red' }
             ]
         },
         options: {
@@ -213,7 +214,7 @@
             scales: {
                 x: {
                     min: 0,
-                    max: 6,
+                
                     title: { display: true, text: 'Date' },
                     ticks: { autoSkip: false },
                     grid: { display: false }
@@ -241,8 +242,8 @@
     new Chart(fertilizerCtx, {
         type: 'pie',
         data: {
-            labels: @json($orderByFertilizer->map(fn($o) => $o->fertilizer->type)),
-            datasets: [{ data: @json($orderByFertilizer->pluck('total_orders')), backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }]
+            labels: @json($orderByFertilizerType->pluck('type')),
+            datasets: [{ data: @json($orderByFertilizerType->pluck('total_orders')), backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }]
         },
         options: {
             plugins: {

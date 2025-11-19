@@ -116,6 +116,11 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <div class="row justify-content-center mt-4">
+                            <div class="col-auto">
+                                {{ $fertilizers->links('pagination::bootstrap-4') }}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

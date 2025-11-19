@@ -41,7 +41,7 @@
                             <th>Session ID</th>
                             <th>Date/Time</th>
                             <th>IP Address</th>
-                            <th>Device</th>
+                            
                             <th>Status</th>
                             <th>Active</th>
                         </tr>
@@ -55,7 +55,7 @@
                             <td style="word-break:break-all;">{{ $login->session_id ?? 'N/A' }}</td>
                             <td>{{ $login->logged_in_at }}</td>
                             <td>{{ $login->ip_address }}</td>
-                            <td style="word-break:break-all;">{{ $login->device }}</td>
+                            
                             <td>{{ ucfirst($login->status) }}</td>
                             <td>
                                 @if(in_array($login->session_id, $activeSessionIds))

@@ -23,6 +23,7 @@
                             <th class="px-4 py-2">Status</th>
                             <th class="px-4 py-2">Agrovet Shop</th>
                             <th class="px-4 py-2">Order Date</th>
+                            <th class="px-4 py-2">Payment Status</th>
                             
                         </tr>
                     </thead>

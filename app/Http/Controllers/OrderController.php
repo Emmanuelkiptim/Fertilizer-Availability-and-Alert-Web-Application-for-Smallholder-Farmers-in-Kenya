@@ -10,6 +10,8 @@ use App\Models\Agrovet;
 use App\Models\Alert;
 use App\Http\Controllers\FertilizerController;
 use App\Http\Controllers\FarmerController;
+use Stripe\Stripe;
+use Stripe\Checkout\Session as StripeSession;
 
 use Illuminate\Support\Facades\Auth;
 

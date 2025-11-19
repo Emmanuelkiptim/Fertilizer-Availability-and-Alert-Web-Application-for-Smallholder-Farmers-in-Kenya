@@ -62,7 +62,7 @@ class FarmerController extends Controller
         $favourites = $farmer->favourites()->get();
         $fertilizers = \App\Models\Fertilizer::where('qty', '>', 0)
             ->whereNotIn('fertilizer_id', $favourites->pluck('fertilizer_id'))
-            ->get();
+            ->paginate(15);
 
         // Add distance to each fertilizer
         foreach ($fertilizers as $fertilizer) {
