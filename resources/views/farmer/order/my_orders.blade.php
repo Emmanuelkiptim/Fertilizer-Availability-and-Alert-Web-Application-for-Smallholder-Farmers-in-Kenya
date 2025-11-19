@@ -1,3 +1,10 @@
+<div class="mb-4 flex justify-end">
+    <form action="{{ route('orders.exportCsv') }}" method="GET">
+        <button type="submit" class="btn btn-success px-4 py-2 rounded shadow-sm text-white font-semibold" style="background-color:#28a745; border:none;">
+            <i class="fas fa-file-csv mr-2"></i> Download Orders CSV
+        </button>
+    </form>
+</div>
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">

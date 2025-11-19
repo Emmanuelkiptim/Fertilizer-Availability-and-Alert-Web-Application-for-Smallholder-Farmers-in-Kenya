@@ -43,6 +43,7 @@ Route::middleware(['auth', 'farmer'])->group(function () {
     Route::get('/fertilizers/{fertilizer_id}/order', [OrderController::class, 'create'])->name('orders.create');
     Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.myOrders');
+    Route::get('/my-orders/export-csv', [OrderController::class, 'exportCsv'])->name('orders.exportCsv');
     Route::get('/my-orders/pending', [OrderController::class, 'pendingOrders'])->name('orders.pending');
     Route::get('/my-orders/approved', [OrderController::class, 'approvedOrders'])->name('orders.approved');
     //cancel pending order

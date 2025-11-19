@@ -245,5 +245,42 @@ class OrderController extends Controller{
 
         return redirect()->back()->with('success', 'Order cancelled successfully.');
     }
+    /**
+     * Export farmer's orders as CSV
+     */
+    public function exportCsv()
+    {
+        $farmer = \App\Models\Farmer::where('user_id', auth()->id())->firstOrFail();
+        $orders = \App\Models\Order::where('farmer_id', $farmer->id)
+            ->with(['fertilizer', 'agrovet'])
+            ->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="my_orders.csv"',
+        ];
+
+        $columns = ['Order ID', 'Fertilizer', 'Type', 'Agrovet', 'Quantity', 'Total Price', 'Status', 'Order Date'];
+
+        $callback = function() use ($orders, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+            foreach ($orders as $order) {
+                fputcsv($file, [
+                    $order->order_id,
+                    $order->fertilizer->name ?? '',
+                    $order->fertilizer->type ?? '',
+                    $order->agrovet->shopname ?? '',
+                    $order->quantity,
+                    $order->total_price,
+                    ucfirst($order->status),
+                    $order->created_at,
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 
 }
