@@ -13,6 +13,7 @@ class Agrovet extends Model
         'agrovet_phonenumber',
         'location_latitude',
         'location_longitude',
+        'name',
     ];
 
     public function user(){

@@ -54,13 +54,46 @@
 
 
 <!-- ORDER SUMMARY CHART -->
-<div class="card">
+<div class="card mb-4">
     <div class="card-header">
         <h3 class="card-title">Order Summary (Pending, Completed, Cancelled)</h3>
     </div>
     <div class="card-body">
+        <!-- Summary Metrics -->
+        @php
+            $totalOrders = $orderSummary->sum('pending') + $orderSummary->sum('completed') + $orderSummary->sum('rejected');
+            $pendingTotal = $orderSummary->sum('pending');
+            $completedTotal = $orderSummary->sum('completed');
+            $cancelledTotal = $orderSummary->sum('rejected');
+            $pendingPct = $totalOrders ? round(($pendingTotal / $totalOrders) * 100, 1) : 0;
+            $completedPct = $totalOrders ? round(($completedTotal / $totalOrders) * 100, 1) : 0;
+            $cancelledPct = $totalOrders ? round(($cancelledTotal / $totalOrders) * 100, 1) : 0;
+            $peakDay = $orderSummary->sortByDesc(function($row){ return $row['pending'] + $row['completed'] + $row['rejected']; })->first();
+        @endphp
+        <div class="row mb-3 text-center">
+            <div class="col-md-3 col-6 mb-2">
+                <div class="p-2 rounded bg-success text-white"><strong>Total Orders</strong><br><span style="font-size:1.5rem;">{{ $totalOrders }}</span></div>
+            </div>
+            <div class="col-md-3 col-6 mb-2">
+                <div class="p-2 rounded bg-warning text-dark"><strong>Pending</strong><br>{{ $pendingTotal }} ({{ $pendingPct }}%)</div>
+            </div>
+            <div class="col-md-3 col-6 mb-2">
+                <div class="p-2 rounded bg-success text-white"><strong>Completed</strong><br>{{ $completedTotal }} ({{ $completedPct }}%)</div>
+            </div>
+            <div class="col-md-3 col-6 mb-2">
+                <div class="p-2 rounded bg-danger text-white"><strong>Cancelled</strong><br>{{ $cancelledTotal }} ({{ $cancelledPct }}%)</div>
+            </div>
+        </div>
+        <div class="mb-3 text-center">
+            <span class="badge badge-info p-2" style="font-size:1rem;">Peak Order Day: <strong>{{ $peakDay ? $peakDay['day'] : '-' }}</strong></span>
+        </div>
         <div style="overflow-x:auto; width:100%;">
             <canvas id="orderSummaryChart" style="width:100%; min-width:900px; max-width:2200px; height:60vh;"></canvas>
+        </div>
+        <div class="mt-3 text-center">
+            <span class="mr-3"><span style="display:inline-block;width:18px;height:18px;background:green;border-radius:3px;margin-right:4px;"></span>Completed</span>
+            <span class="mr-3"><span style="display:inline-block;width:18px;height:18px;background:yellow;border-radius:3px;margin-right:4px;border:1px solid #ccc;"></span>Pending</span>
+            <span><span style="display:inline-block;width:18px;height:18px;background:red;border-radius:3px;margin-right:4px;"></span>Cancelled</span>
         </div>
     </div>
 </div>
@@ -109,6 +142,9 @@
                 @endforeach
             </tbody>
         </table>
+            <div class="mt-2">
+                {{ $pendingOrders->links('pagination::bootstrap-4') }}
+            </div>
     </div>
 </div>
 
@@ -146,6 +182,9 @@
                 @endforeach
             </tbody>
         </table>
+            <div class="mt-2">
+                {{ $completedOrders->links('pagination::bootstrap-4') }}
+            </div>
     </div>
 </div>
 
@@ -184,6 +223,9 @@
                 @endforeach
             </tbody>
         </table>
+            <div class="mt-2">
+                {{ $rejectedOrders->links('pagination::bootstrap-4') }}
+            </div>
     </div>
 </div>
 @stop
@@ -192,71 +234,111 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // ORDER SUMMARY BAR CHART
+    // ORDER SUMMARY STACKED BAR CHART
     const orderSummaryCtx = document.getElementById('orderSummaryChart').getContext('2d');
-    const orderSummaryChart = new Chart(orderSummaryCtx, {
+    const orderSummaryLabels = @json($orderSummary->pluck('day'));
+    const pendingData = @json($orderSummary->pluck('pending'));
+    const completedData = @json($orderSummary->pluck('completed'));
+    const cancelledData = @json($orderSummary->pluck('rejected'));
+    new Chart(orderSummaryCtx, {
         type: 'bar',
         data: {
-            labels: @json($orderSummary->pluck('day')),
+            labels: orderSummaryLabels,
             datasets: [
-                { label: 'Pending', data: @json($orderSummary->pluck('pending')), backgroundColor: 'yellow' },
-                { label: 'Approved', data: @json($orderSummary->pluck('completed')), backgroundColor: 'green' },
-                { label: 'Rejected', data: @json($orderSummary->pluck('rejected')), backgroundColor: 'red' }
+                {
+                    label: 'Completed',
+                    data: completedData,
+                    backgroundColor: 'green',
+                    stack: 'orders',
+                },
+                {
+                    label: 'Pending',
+                    data: pendingData,
+                    backgroundColor: 'yellow',
+                    stack: 'orders',
+                },
+                {
+                    label: 'Rejected',
+                    data: cancelledData,
+                    backgroundColor: 'red',
+                    stack: 'orders',
+                },
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                title: { display: false }, // Title handled by sticky div
-                legend: { display: false } // Legend handled by sticky div
+                legend: { display: true, position: 'top' },
+                title: { display: false },
+                tooltip: {
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            return `${label}: ${value}`;
+                        }
+                    }
+                }
             },
             scales: {
                 x: {
-                    min: 0,
-                
+                    stacked: true,
                     title: { display: true, text: 'Date' },
-                    ticks: { autoSkip: false },
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 20,
+                        callback: function(value, index, values) {
+                            // Show every 2nd or 3rd label for readability
+                            return index % 2 === 0 ? this.getLabelForValue(value) : '';
+                        }
+                    },
                     grid: { display: false }
                 },
                 y: {
+                    stacked: true,
                     beginAtZero: true,
                     title: { display: true, text: 'Number of Orders' },
-                    position: 'left',
-                    offset: false
                 }
-            },
-            pan: {
-                enabled: true,
-                mode: 'x',
-            },
-            zoom: {
-                enabled: true,
-                mode: 'x',
             }
         }
     });
 
-    // ORDERS BY FERTILIZER PIE CHART
+    // ORDERS BY FERTILIZER TYPE BAR CHART
     const fertilizerCtx = document.getElementById('fertilizerChart').getContext('2d');
+    const fertilizerLabels = @json($orderByFertilizerType->pluck('type'));
+    const fertilizerData = @json($orderByFertilizerType->pluck('total_orders'));
+    // Generate a unique color for each fertilizer type
+    function getColor(index, total) {
+        // Use HSL for evenly spaced colors
+        const hue = Math.round((360 / total) * index);
+        return `hsl(${hue}, 65%, 55%)`;
+    }
+    const fertilizerColors = fertilizerLabels.map((_, i) => getColor(i, fertilizerLabels.length));
     new Chart(fertilizerCtx, {
-        type: 'pie',
+        type: 'bar',
         data: {
-            labels: @json($orderByFertilizerType->pluck('type')),
-            datasets: [{ data: @json($orderByFertilizerType->pluck('total_orders')), backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }]
+            labels: fertilizerLabels,
+            datasets: [{ data: fertilizerData, backgroundColor: fertilizerColors }]
         },
         options: {
             plugins: {
                 title: { display: true, text: 'Orders by Fertilizer Type' },
                 tooltip: {
                     callbacks: {
+                        title: function() {
+                            // Show total orders in the tooltip title
+                            const total = fertilizerData.reduce((a, b) => a + b, 0);
+                            return `Total Orders: ${total}`;
+                        },
                         label: function(context) {
                             const label = context.label || '';
                             const value = context.parsed;
-                            const data = context.chart.data.datasets[0].data;
-                            const total = data.reduce((a, b) => a + b, 0);
-                            const percentage = total ? ((value / total) * 100).toFixed(1) : 0;
-                            return `${label}: ${value} (${percentage}%)`;
+                            return `${label}`;
                         }
                     }
                 }

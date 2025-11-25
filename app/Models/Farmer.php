@@ -12,6 +12,7 @@ class Farmer extends Model
         'farmer_phonenumber',
         'location_latitude',
         'location_longitude',
+        'Farmer name',
     ];
 
     public function user(){

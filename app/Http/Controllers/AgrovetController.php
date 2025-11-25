@@ -27,11 +27,12 @@ class AgrovetController extends Controller
 
         }
         Agrovet::create([
-            'user_id'=>$user->id,
-            'shopname'=>$request->shopname,
-            'agrovet_phonenumber'=>$request->agrovet_phonenumber,
-            'location_latitude'=>$request->location_latitude,
-            'location_longitude'=>$request->location_longitude,
+            'user_id' => $user->id,
+            'shopname' => $request->shopname,
+            'agrovet_phonenumber' => $request->agrovet_phonenumber,
+            'location_latitude' => $request->location_latitude,
+            'location_longitude' => $request->location_longitude,
+            'name' => $user->name,
         ]);
         return redirect()->route('dashboard')->with('Success', 'Agrovet profile created successfully');
     }
@@ -47,8 +48,9 @@ class AgrovetController extends Controller
             return redirect()->route('dashboard')->with('error','You are not registered as an agrovet');
         }
         $agrovet->update([
-            'shopname'=>$request->shopname,
-            'agrovet_phonenumber'=>$request->agrovet_phonenumber,
+            'shopname' => $request->shopname,
+            'agrovet_phonenumber' => $request->agrovet_phonenumber,
+            'name' => $user->name,
         ]);
         return redirect()->route('dashboard')->with('success','Agrovet profile updated successfully');
     }

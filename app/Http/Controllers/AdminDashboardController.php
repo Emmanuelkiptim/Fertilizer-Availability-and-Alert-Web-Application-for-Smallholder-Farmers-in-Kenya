@@ -97,21 +97,21 @@ class AdminDashboardController extends Controller
             ->orderBy('day', 'asc')
             ->get();
 
-        // Pending Orders
+        // Pending Orders (paginated)
         $pendingOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
-            ->where('status', 'Pending')->get();
+            ->where('status', 'Pending')->paginate(10, ['*'], 'pending_page');
 
-        // Completed Orders
+        // Completed Orders (paginated)
         $completedOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
-            ->where('status', 'Approved')->get();
+            ->where('status', 'Approved')->paginate(10, ['*'], 'completed_page');
 
-        // Cancelled Orders
+        // Cancelled Orders (paginated)
         $cancelledOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
-            ->where('status', 'Cancelled')->get();
+            ->where('status', 'Cancelled')->paginate(10, ['*'], 'cancelled_page');
 
-        // Rejected Orders
+        // Rejected Orders (paginated)
         $rejectedOrders = Order::with(['farmer', 'fertilizer', 'agrovet'])
-            ->where('status', 'Rejected')->get();
+            ->where('status', 'Rejected')->paginate(10, ['*'], 'rejected_page');
 
         // Orders by Fertilizer Type (grouped by type)
         $orderByFertilizerType = Order::select('fertilizer_id', DB::raw('SUM(quantity) as total_orders'))
