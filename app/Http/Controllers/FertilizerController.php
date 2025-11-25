@@ -9,6 +9,23 @@ use Illuminate\Support\Facades\Auth;
 class FertilizerController extends Controller
 {
     /**
+     * Calculate distance between two lat/lng points in kilometers (Haversine formula)
+     */
+    private function haversineDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371; // Radius of the earth in km
+        $lat1 = deg2rad($lat1);
+        $lat2 = deg2rad($lat2);
+        $deltaLat = $lat2 - $lat1;
+        $deltaLon = deg2rad($lon2 - $lon1);
+        $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
+            cos($lat1) * cos($lat2) *
+            sin($deltaLon / 2) * sin($deltaLon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        $distance = $earthRadius * $c;
+        return $distance;
+    }
+    /**
      * Helper: get the logged-in agrovet's ID (agrovets.id).
      */
     protected function currentAgrovetId()
@@ -67,17 +84,28 @@ class FertilizerController extends Controller
             // 'availability' => $request->availability,
         ]);
 
-        // Alert all farmers who have a favourite fertilizer of the same type
-        $favouriteFarmerIds = \App\Models\Farmer::whereHas('favourites', function($query) use ($request) {
-            $query->where('type', $request->type);
-        })->pluck('id');
-
-        $fertilizerUrl = route('farmers.fertilizers.show', $fertilizer->fertilizer_id);
-        foreach ($favouriteFarmerIds as $farmerId) {
-            \App\Models\Alert::create([
-                'farmer_id' => $farmerId,
-                'message' => 'A new fertilizer of your favourite type (<b>' . e($fertilizer->type) . '</b>) has been added: <b>' . e($fertilizer->name) . '</b>. <a href="' . $fertilizerUrl . '" class="alert-action-btn">View Fertilizer</a>',
-            ]);
+        // Alert all farmers within 5km of this agrovet
+        $agrovet = $fertilizer->agrovet;
+        if ($agrovet && $agrovet->location_latitude && $agrovet->location_longitude) {
+            $farmers = \App\Models\Farmer::whereNotNull('location_latitude')
+                ->whereNotNull('location_longitude')
+                ->get();
+            $fertilizerUrl = route('farmers.fertilizers.show', $fertilizer->fertilizer_id);
+            foreach ($farmers as $farmer) {
+                $distance = $this->haversineDistance(
+                    $agrovet->location_latitude,
+                    $agrovet->location_longitude,
+                    $farmer->location_latitude,
+                    $farmer->location_longitude
+                );
+                if ($distance <= 5) {
+                    \App\Models\Alert::create([
+                        'farmer_id' => $farmer->id,
+                        'message' => 'A new fertilizer (<b>' . e($fertilizer->name) . '</b>) has been added by a nearby agrovet (<b>' . e($agrovet->shopname) . '</b>). <a href="' . $fertilizerUrl . '" class="alert-action-btn btn btn-primary btn-sm" style="margin-left:8px;">View Fertilizer</a>',
+                        'is_read' => false,
+                    ]);
+                }
+            }
         }
 
         return redirect()->route('fertilizers.index')
