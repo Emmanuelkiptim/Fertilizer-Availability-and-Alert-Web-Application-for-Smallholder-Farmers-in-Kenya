@@ -22,7 +22,7 @@
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-header bg-success text-white">
-                <h3 class="card-title">Completed Revenue</h3>
+                <h3 class="card-title">Approved Revenue</h3>
             </div>
             <div class="card-body">
                 <h2 style="font-weight:bold; color:#256029;">Ksh {{ number_format($totalCompletedRevenue, 2) }}</h2>
@@ -32,7 +32,7 @@
     <div class="col-md-4">
         <div class="card h-100">
             <div class="card-header bg-danger text-white">
-                <h3 class="card-title">Cancelled Revenue</h3>
+                <h3 class="card-title">Rejected Revenue</h3>
             </div>
             <div class="card-body">
                 <h2 style="font-weight:bold; color:#a94442;">Ksh {{ number_format($totalRejectedRevenue, 2) }}</h2>
@@ -56,7 +56,7 @@
 <!-- ORDER SUMMARY CHART -->
 <div class="card mb-4">
     <div class="card-header">
-        <h3 class="card-title">Order Summary (Pending, Completed, Cancelled)</h3>
+        <h3 class="card-title">Order Summary (Pending, Approved, Rejected)</h3>
     </div>
     <div class="card-body">
         <!-- Summary Metrics -->
@@ -78,10 +78,10 @@
                 <div class="p-2 rounded bg-warning text-dark"><strong>Pending</strong><br>{{ $pendingTotal }} ({{ $pendingPct }}%)</div>
             </div>
             <div class="col-md-3 col-6 mb-2">
-                <div class="p-2 rounded bg-success text-white"><strong>Completed</strong><br>{{ $completedTotal }} ({{ $completedPct }}%)</div>
+                <div class="p-2 rounded bg-success text-white"><strong>Approved</strong><br>{{ $completedTotal }} ({{ $completedPct }}%)</div>
             </div>
             <div class="col-md-3 col-6 mb-2">
-                <div class="p-2 rounded bg-danger text-white"><strong>Cancelled</strong><br>{{ $cancelledTotal }} ({{ $cancelledPct }}%)</div>
+                <div class="p-2 rounded bg-danger text-white"><strong>Rejected</strong><br>{{ $cancelledTotal }} ({{ $cancelledPct }}%)</div>
             </div>
         </div>
         <div class="mb-3 text-center">
@@ -91,9 +91,9 @@
             <canvas id="orderSummaryChart" style="width:100%; min-width:900px; max-width:2200px; height:60vh;"></canvas>
         </div>
         <div class="mt-3 text-center">
-            <span class="mr-3"><span style="display:inline-block;width:18px;height:18px;background:green;border-radius:3px;margin-right:4px;"></span>Completed</span>
+            <span class="mr-3"><span style="display:inline-block;width:18px;height:18px;background:green;border-radius:3px;margin-right:4px;"></span>Approved</span>
             <span class="mr-3"><span style="display:inline-block;width:18px;height:18px;background:yellow;border-radius:3px;margin-right:4px;border:1px solid #ccc;"></span>Pending</span>
-            <span><span style="display:inline-block;width:18px;height:18px;background:red;border-radius:3px;margin-right:4px;"></span>Cancelled</span>
+            <span><span style="display:inline-block;width:18px;height:18px;background:red;border-radius:3px;margin-right:4px;"></span>Rejected</span>
         </div>
     </div>
 </div>
@@ -246,7 +246,7 @@
             labels: orderSummaryLabels,
             datasets: [
                 {
-                    label: 'Completed',
+                    label: 'Approved',
                     data: completedData,
                     backgroundColor: 'green',
                     stack: 'orders',
@@ -330,15 +330,13 @@
                 title: { display: true, text: 'Orders by Fertilizer Type' },
                 tooltip: {
                     callbacks: {
-                        title: function() {
-                            // Show total orders in the tooltip title
-                            const total = fertilizerData.reduce((a, b) => a + b, 0);
-                            return `Total Orders: ${total}`;
+                        title: function(context) {
+                            // Show fertilizer type as title
+                            return context[0].label;
                         },
                         label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed;
-                            return `${label}`;
+                            const value = context.parsed.y !== undefined ? context.parsed.y : context.parsed;
+                            return `Total Orders: ${value}`;
                         }
                     }
                 }

@@ -18,7 +18,7 @@ class FertilizerReportController extends Controller
         // Fertilizer Stock Summary
         $fertilizerStocks = Fertilizer::with('agrovet')
             ->orderBy('name')
-            ->get();
+            ->paginate(10);
 
         // For Bar Chart: Fertilizer Type vs Available Quantity
         $typeGroups = Fertilizer::select('type')

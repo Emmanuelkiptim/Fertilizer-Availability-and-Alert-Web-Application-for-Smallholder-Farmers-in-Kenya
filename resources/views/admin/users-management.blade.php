@@ -93,10 +93,10 @@
                     <tbody>
                         @foreach($agrovets as $agrovet)
                             <tr>
-                                <td>{{ $agrovet->id }}</td>
-                                <td>{{ $agrovet->user ? $agrovet->user->name : $agrovet->name }}</td>
+                                <td>{{ $agrovet->user ? $agrovet->user->id : $agrovet->user_id }}</td>
+                                <td>{{ $agrovet->user ? $agrovet->user->name : '' }}</td>
                                 <td>{{ $agrovet->shopname }}</td>
-                                <td>{{ $agrovet->user ? $agrovet->user->email : $agrovet->email }}</td>
+                                <td>{{ $agrovet->user ? $agrovet->user->email : '' }}</td>
                             </tr>
                         @endforeach
                     </tbody>

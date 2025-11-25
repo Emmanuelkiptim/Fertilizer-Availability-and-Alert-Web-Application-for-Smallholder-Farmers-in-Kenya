@@ -38,9 +38,7 @@
                         @endforeach
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-center mt-3">
-                    {{ $fertilizerStocks->links('pagination::bootstrap-4') }}
-                </div>
+                
             </div>
         </div>
     </div>

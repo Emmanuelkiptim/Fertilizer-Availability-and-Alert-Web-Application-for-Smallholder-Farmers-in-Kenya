@@ -151,7 +151,8 @@ class AdminDashboardController extends Controller
 
         $allUsers = \App\Models\User::all();
         $farmers = \App\Models\User::where('role', 'farmer')->get();
-        $agrovets = \App\Models\User::where('role', 'agrovet')->get();
+        // Get Agrovet models with their related user
+        $agrovets = \App\Models\Agrovet::with('user')->get();
         $admins = \App\Models\User::where('role', 'admin')->get();
         return view('admin.users-management', compact('allUsers', 'farmers', 'agrovets', 'admins'));
 
